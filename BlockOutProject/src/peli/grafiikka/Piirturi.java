@@ -107,7 +107,9 @@ public class Piirturi {
 			this.tippuvaPalikkapiirturi.piirra(g, tippuvaPalikka);
 		}
 		
-		this.statistiikkapiirturi.piirra(g, ikkunanLeveys, ikkunanKorkeus, palojaSisaltavienKerrostenMaara);
+		if (peli.piirretaankoStatistiikka()) {
+			this.statistiikkapiirturi.piirra(g, ikkunanLeveys, ikkunanKorkeus, palojaSisaltavienKerrostenMaara);
+		}
 	}
 	
 	public void piirraGameOver(Graphics g, JPanel kuvanKuuntelija, boolean paaseekoListalle) {

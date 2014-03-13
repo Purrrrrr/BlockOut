@@ -19,6 +19,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 //import java.applet.AudioClip;
 //import java.applet.Applet;
 import javax.sound.sampled.AudioInputStream;
@@ -59,7 +62,7 @@ public class Peli extends Ikkuna {
 	* @param asetukset Kayttajan valitsemat asetukset
 	* @param ennatyslistaaja Ennatyslistan hallinnoija
 	*/
-	public Peli(BlockOut kayttis, Asetukset asetukset, Ennatyslistaaja ennatyslistaaja, int leveys, int korkeus) {
+	public Peli(BlockOut kayttis, Asetukset asetukset, Ennatyslistaaja ennatyslistaaja) {
 		super(); //vai olisko, etta konstruktoritonta superia kutsutaan automaattisesti jos sita ei kirjoteta tahan?
 		
 		this.kayttis = kayttis;
@@ -67,16 +70,16 @@ public class Peli extends Ikkuna {
 		
 		this.palikkasetti = asetukset.annaPalikkasetti();
 		
-		asetaPeliValmiiksi(asetukset, leveys, korkeus);
+		asetaPeliValmiiksi(asetukset);
 	}
 	
-	private void asetaPeliValmiiksi(Asetukset asetukset, int leveys, int korkeus) {
+	private void asetaPeliValmiiksi(Asetukset asetukset) {
 		alustaTilanne(asetukset.annaAloitustaso());
 		
 		Ulottuvuudet ulottuvuudet = asetukset.annaUlottuvuudet();
 		
 		alustaLogiikka(asetukset, ulottuvuudet);
-		alustaGrafiikka(asetukset, ulottuvuudet, leveys, korkeus);
+		alustaGrafiikka(asetukset, ulottuvuudet);
 		
 		NappainKuuntelija nappainKuuntelija = new NappainKuuntelija( this, this.kayttis, asetukset.annaNappainsetti() );
 		this.addKeyListener(nappainKuuntelija);
@@ -103,8 +106,21 @@ public class Peli extends Ikkuna {
 		this.palikkavarasto = new Palikkavarasto(asetukset.annaPalikkasetti());
 	}
 	
-	private void alustaGrafiikka(Asetukset asetukset, Ulottuvuudet ulottuvuudet, int leveys, int korkeus) {
+	private void alustaGrafiikka(final Asetukset asetukset, final Ulottuvuudet ulottuvuudet) {
+		int leveys = this.getWidth();
+		int korkeus = this.getHeight();
 		this.piirturi = new Piirturi( this, leveys, korkeus, ulottuvuudet, asetukset.annaPalikkasetti(), asetukset.annaVarit(), this.pistelaskija, this.ennatyslistaaja );
+		
+		// Lisätään kuuntelija, joka muuttaa piirturia, jos joku muuttaa ikkunan kokoa yllättäen.
+		for(ComponentListener l : getComponentListeners()) {
+			removeComponentListener(l);
+		}
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				//Recalculate the variable you mentioned
+				alustaGrafiikka(asetukset, ulottuvuudet);
+			}
+		});
 	}
 	
 	private void haeAanet(boolean aanetPaalla) {
@@ -178,6 +194,15 @@ public class Peli extends Ikkuna {
 		return this.tauolla;
 	}
 	
+	/**
+	* Kertoo piirretäänkö peliin statistiikat
+	* 
+	* @return Aina true
+	*/
+	public boolean piirretaankoStatistiikka() {
+		return true;
+	}
+
 	/**
 	* Lopettaa pelin.
 	* 

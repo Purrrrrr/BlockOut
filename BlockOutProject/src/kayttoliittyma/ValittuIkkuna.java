@@ -1,5 +1,5 @@
 package kayttoliittyma;
 
 public enum ValittuIkkuna {
-	TYHJA, PELI, ASETUKSET, VARIT, ENNATYSLISTA;
+	DEMO, PELI, ASETUKSET, VARIT, ENNATYSLISTA;
 }

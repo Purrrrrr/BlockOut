@@ -57,7 +57,7 @@ public class BlockOut implements Runnable {
 		this.etusivu = new Etusivu(this);
 		this.kehys.add(this.etusivu, BorderLayout.SOUTH);
 		
-		this.kehys.add(this.ikkunat.get(ValittuIkkuna.TYHJA), BorderLayout.CENTER);
+		this.kehys.add(this.ikkunat.get(ValittuIkkuna.DEMO), BorderLayout.CENTER);
 	}
 	
 	/**
@@ -66,12 +66,9 @@ public class BlockOut implements Runnable {
 	private void luoIkkunat() {
 		this.ikkunat = new HashMap<ValittuIkkuna, Ikkuna>();
 		
-		this.ikkunat.put(ValittuIkkuna.TYHJA, new Ikkuna());
-		
-		
 		pelinAsetukset = new PelinAsetukset(this, "asetukset.javafile");
 		this.ikkunat.put(ValittuIkkuna.ASETUKSET, pelinAsetukset);
-		
+
 		/*
 		varipaletti = new Varipaletti();
 		this.ikkunat.put(ValittuIkkuna.VARIT, varipaletti);
@@ -79,7 +76,9 @@ public class BlockOut implements Runnable {
 		ennatyslistaaja = new Ennatyslistaaja();
 		this.ikkunat.put(ValittuIkkuna.ENNATYSLISTA, ennatyslistaaja);
 		
-		this.valittuIkkuna = ValittuIkkuna.TYHJA;
+		this.ikkunat.put(ValittuIkkuna.DEMO, new DemoIkkuna(this, pelinAsetukset, ennatyslistaaja));
+		
+		this.valittuIkkuna = ValittuIkkuna.DEMO;
 	}
 	
 	/**
@@ -131,11 +130,15 @@ public class BlockOut implements Runnable {
 			this.etusivu.vaihdaTaukoNappulanTeksti("Tauko");
 		}
 		
-		int leveys = this.ikkunat.get(valittuIkkuna).getWidth();
-		int korkeus = this.ikkunat.get(valittuIkkuna).getHeight();
 		
 		this.ennatyslistaaja.poistaEnnatyslistanKysely();
-		this.peli = new Peli(this, pelinAsetukset.annaValitutAsetukset(), ennatyslistaaja, leveys, korkeus);
+		this.peli = new Peli(this, pelinAsetukset.annaValitutAsetukset(), ennatyslistaaja);
+
+		//Haksoroidaan peli piirtymään heti kättelyssä nätisti.
+		int leveys = this.ikkunat.get(valittuIkkuna).getWidth();
+		int korkeus = this.ikkunat.get(valittuIkkuna).getHeight();
+		this.peli.setSize(leveys,korkeus);
+
 		this.peli.aloitaPeli();
 		this.ikkunat.put(ValittuIkkuna.PELI, this.peli);
 		
@@ -200,7 +203,7 @@ public class BlockOut implements Runnable {
 			vaihdaJPanel(ValittuIkkuna.ENNATYSLISTA);
 		}
 		else if (this.valittuIkkuna == ValittuIkkuna.PELI) {
-			vaihdaJPanel(ValittuIkkuna.TYHJA);
+			vaihdaJPanel(ValittuIkkuna.DEMO);
 		}
 		else {
 			this.etusivu.vaihdaNappuloidenAktiivisuuksiaTasmaaviksi( valittuIkkuna );
