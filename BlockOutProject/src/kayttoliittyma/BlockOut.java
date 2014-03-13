@@ -27,6 +27,7 @@ public class BlockOut implements Runnable {
 	private HashMap<ValittuIkkuna, Ikkuna> ikkunat;
 	private Etusivu etusivu;
 	
+	private DemoIkkuna demoIkkuna;
 	private Peli peli;
 	private PelinAsetukset pelinAsetukset;
 	//private Varipaletti varipaletti;
@@ -76,7 +77,8 @@ public class BlockOut implements Runnable {
 		ennatyslistaaja = new Ennatyslistaaja();
 		this.ikkunat.put(ValittuIkkuna.ENNATYSLISTA, ennatyslistaaja);
 		
-		this.ikkunat.put(ValittuIkkuna.DEMO, new DemoIkkuna(this, pelinAsetukset, ennatyslistaaja));
+		demoIkkuna = new DemoIkkuna(this, pelinAsetukset, ennatyslistaaja);
+		this.ikkunat.put(ValittuIkkuna.DEMO, demoIkkuna);
 		
 		this.valittuIkkuna = ValittuIkkuna.DEMO;
 	}
@@ -97,6 +99,14 @@ public class BlockOut implements Runnable {
 	*/
 	public void vaihdaJPanel(ValittuIkkuna nytValittuIkkuna) {
 		asetaPeliTarvittaessaTauolle(nytValittuIkkuna);
+
+		if (this.valittuIkkuna == ValittuIkkuna.DEMO) {
+			demoIkkuna.pysaytaPeli();
+		}
+		if (nytValittuIkkuna == ValittuIkkuna.DEMO) {
+			demoIkkuna.alustaUusiPeli();
+		}
+
 		if (this.valittuIkkuna == ValittuIkkuna.ASETUKSET) {
 			pelinAsetukset.vaihdaAsetuksetPanelia();
 		}
