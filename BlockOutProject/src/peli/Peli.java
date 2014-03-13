@@ -32,7 +32,7 @@ import javax.sound.sampled.FloatControl.Type;
 
 public class Peli extends Ikkuna {
 	private BlockOut kayttis;
-	private Piirturi piirturi;
+	private Piirturi piirturi = null;
 	private Ennatyslistaaja ennatyslistaaja;
 	
 	// Hallinnoitavat oliot:
@@ -73,13 +73,19 @@ public class Peli extends Ikkuna {
 		asetaPeliValmiiksi(asetukset);
 	}
 	
-	private void asetaPeliValmiiksi(Asetukset asetukset) {
+	private void asetaPeliValmiiksi(final Asetukset asetukset) {
 		alustaTilanne(asetukset.annaAloitustaso());
 		
 		Ulottuvuudet ulottuvuudet = asetukset.annaUlottuvuudet();
 		
 		alustaLogiikka(asetukset, ulottuvuudet);
-		alustaGrafiikka(asetukset, ulottuvuudet);
+
+		// Lis‰t‰‰n kuuntelija, joka muuttaa asettaa piirturin, jos ikkunan kokoa muutetaan.
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				alustaGrafiikka(asetukset, asetukset.annaUlottuvuudet());
+			}
+		});
 		
 		NappainKuuntelija nappainKuuntelija = new NappainKuuntelija( this, this.kayttis, asetukset.annaNappainsetti() );
 		this.addKeyListener(nappainKuuntelija);
@@ -110,17 +116,8 @@ public class Peli extends Ikkuna {
 		int leveys = this.getWidth();
 		int korkeus = this.getHeight();
 		this.piirturi = new Piirturi( this, leveys, korkeus, ulottuvuudet, asetukset.annaPalikkasetti(), asetukset.annaVarit(), this.pistelaskija, this.ennatyslistaaja );
+		this.repaint();
 		
-		// Lis‰t‰‰n kuuntelija, joka muuttaa piirturia, jos joku muuttaa ikkunan kokoa yll‰tt‰en.
-		for(ComponentListener l : getComponentListeners()) {
-			removeComponentListener(l);
-		}
-		addComponentListener(new ComponentAdapter() {
-			public void componentResized(ComponentEvent e) {
-				//Recalculate the variable you mentioned
-				alustaGrafiikka(asetukset, ulottuvuudet);
-			}
-		});
 	}
 	
 	private void haeAanet(boolean aanetPaalla) {
@@ -145,7 +142,9 @@ public class Peli extends Ikkuna {
 	* Asettaa peliin uudet asetukset. Kayttajan muuttamista asetuksista vain grafiikkaan ja nappaimiin vaikuttavat asetukset otetaan voimaan.
 	*/
 	public void asetaUudetAsetukset(Asetukset asetukset) {
-		this.piirturi.asetaUudetAsetukset( asetukset.annaUlottuvuudet().annaLeikkauspiste(), asetukset.annaVarit() );
+		if (this.piirturi != null) {
+			this.piirturi.asetaUudetAsetukset( asetukset.annaUlottuvuudet().annaLeikkauspiste(), asetukset.annaVarit() );
+		}
 		
 		this.removeKeyListener( this.getKeyListeners()[0] );
 		this.addKeyListener( new NappainKuuntelija( this, this.kayttis, asetukset.annaNappainsetti() ) );
@@ -383,11 +382,13 @@ public class Peli extends Ikkuna {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		this.piirturi.piirra(g, kentta.annaKentta(), tippuvaPalikka, kentta.annaPalojaSisaltavienKerrostenMaara() );
-		
-		if (gameOver) {
-			boolean paaseekoListalle = ennatyslistaaja.paaseekoListalle( pistelaskija.annaPisteet(), kentta.annaLeveys(), kentta.annaKorkeus(), kentta.annaSyvyys(), this.palikkasetti );
-			this.piirturi.piirraGameOver(g, this, paaseekoListalle);
+		if (this.piirturi != null) {
+			this.piirturi.piirra(g, kentta.annaKentta(), tippuvaPalikka, kentta.annaPalojaSisaltavienKerrostenMaara() );
+			
+			if (gameOver) {
+				boolean paaseekoListalle = ennatyslistaaja.paaseekoListalle( pistelaskija.annaPisteet(), kentta.annaLeveys(), kentta.annaKorkeus(), kentta.annaSyvyys(), this.palikkasetti );
+				this.piirturi.piirraGameOver(g, this, paaseekoListalle);
+			}
 		}
 	}
 }

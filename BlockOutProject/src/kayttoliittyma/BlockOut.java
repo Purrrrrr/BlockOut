@@ -144,11 +144,6 @@ public class BlockOut implements Runnable {
 		this.ennatyslistaaja.poistaEnnatyslistanKysely();
 		this.peli = new Peli(this, pelinAsetukset.annaValitutAsetukset(), ennatyslistaaja);
 
-		//Haksoroidaan peli piirtymään heti kättelyssä nätisti.
-		int leveys = this.ikkunat.get(valittuIkkuna).getWidth();
-		int korkeus = this.ikkunat.get(valittuIkkuna).getHeight();
-		this.peli.setSize(leveys,korkeus);
-
 		this.peli.aloitaPeli();
 		this.ikkunat.put(ValittuIkkuna.PELI, this.peli);
 		
