@@ -13,10 +13,12 @@ import java.awt.Graphics;
 public class DemoPeli extends Peli {
 
   private DemoIkkuna emoIkkuna;
+	private TekoAly aly;
 
   public DemoPeli(DemoIkkuna ikkuna, Asetukset asetukset, Ennatyslistaaja ennatyslistaaja) {
     super(ikkuna.getKayttis(), asetukset, ennatyslistaaja);
     emoIkkuna = ikkuna;
+		aly = new TekoAly(this,700);
     
     //Poistetaan normaali näppäinkuuntelija
     for (KeyListener l : getKeyListeners()) {
@@ -35,9 +37,21 @@ public class DemoPeli extends Peli {
     super.haeUusiPalikkaKenttaan();
 
     if (this.onkoGameOver()) {
+			aly.stop();
       emoIkkuna.alustaUusiPeli();
-    }
+    } else {
+			aly.uusiPalikka();
+		}
   }
+	public void aloitaPeli() {
+		super.aloitaPeli();
+		aly.start();
+	}
+	public void asetaPeliTauolle(boolean tauolla) {
+		super.asetaPeliTauolle(tauolla);
+		if (tauolla) aly.stop();
+		if (!tauolla && !aly.isRunning()) aly.start();
+	}
 
 
   /**
