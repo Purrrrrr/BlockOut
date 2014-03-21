@@ -10,6 +10,7 @@ public class Palikka {
 	private int koko;
 	private int alapisteet, ylapisteet, palojenMaara;
 	private HashMap<Koordinaatti, ArrayList<Koordinaatti>> sarmat;
+	int hashcode = 0;
 	
 	/**
 	* Hallinnoi yhden palikan sisaista rakennetta ja palikkaan liittyvia peruspisteita. Voidaan luoda 3x3x3 palikoita.
@@ -75,6 +76,7 @@ public class Palikka {
 		
 		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
 		this.sarmat = kulmahaku.haeSarmat();
+		laskeHashCode();
 		
 		return true;
 	}
@@ -219,6 +221,7 @@ public class Palikka {
 		
 		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
 		this.sarmat = kulmahaku.haeSarmat();
+		laskeHashCode();
 	}
 	
 	/**
@@ -235,5 +238,27 @@ public class Palikka {
 		
 		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
 		this.sarmat = kulmahaku.haeSarmat();
+		laskeHashCode();
 	}
+
+	private void laskeHashCode() {
+		hashcode = 0;
+		int exp = 1;
+
+		for (int k=0; k<palikka[0][0].length; k++) {
+			for (int j=0; j<palikka[0].length; j++) {
+				for (int i=0; i<palikka.length; i++) {
+					if (palikka[i][j][k] == Pala.TIPPUVA) {
+						int subcode = i<<16 + j<<8 + k;
+						hashcode += exp * subcode;
+						exp *= 31;
+					}
+				}
+			}
+		}
+	}
+	public int hashCode() {
+		return hashcode;
+	}
+
 }

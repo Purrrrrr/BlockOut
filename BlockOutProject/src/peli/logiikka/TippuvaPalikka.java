@@ -2,11 +2,8 @@ package peli.logiikka;
 
 import peli.Peli;
 
-public class TippuvaPalikka {
-	private Palikka palikka;
-	private int x, y, z;
+public class TippuvaPalikka extends PalikkaKentalla {
 	private int dAlfaXY, dAlfaYZ, dAlfaXZ; // vastapaivaan positiivinen, 0 astetta idassa
-	private Kentta kentta;
 	private Peli peli;
 	
 	/**
@@ -17,84 +14,10 @@ public class TippuvaPalikka {
 	* @param peli Peli, joka paivittaa nakymaa ja joka sisaltaa palikan
 	*/
 	public TippuvaPalikka(Palikka palikka, Kentta kentta, Peli peli) {
-		this.palikka = palikka;
-		this.kentta = kentta;
+		super(palikka, kentta);
 		this.peli = peli;
 		
-		this.x = (kentta.annaLeveys()+2) / 2;
-		this.y = (kentta.annaKorkeus()+2) / 2;
-		this.z = 0;
-		
-		mahdutaPalikkaKenttaan();
 		nollaaPyoritykset();
-	}
-	
-	private void mahdutaPalikkaKenttaan() {
-		mahdutaPyorayttamallaKenttaan();
-		mahdutaSiirtamallaKenttaan();
-	}
-	
-	private void mahdutaPyorayttamallaKenttaan() {
-		if (palikka.annaLeveys() > kentta.annaLeveys() || palikka.annaKorkeus() > kentta.annaKorkeus()) {
-			pyoritaSuuntaEsille(0, 1);
-			if (mahtuukoPalikkaKenttaan(0, 0, 0)) {
-				return;
-			}
-			
-			pyoritaSuuntaEsille(1, 0);
-			if (mahtuukoPalikkaKenttaan(0, 0, 0)) {
-				return;
-			}
-		}
-	}
-	
-	private void mahdutaSiirtamallaKenttaan() {
-		if (!mahtuukoPalikkaKenttaan(0, 0, 0)) {
-			if (siirra(-1, 0, 0)) {
-				return;
-			}
-			if (siirra(-1, 1, 0)) {
-				return;
-			}
-			
-			System.out.println("Palikkaa ei saatu mahtumaan kenttaan. Ei pitaisi tapahtua jos kyseessa ei ole itse tehty palikka.");
-		}
-	}
-	
-	/**
-	* Antaa tippuvan palikan keskipisteen x-koordinaatin
-	* 
-	* @return X-koordinaatti ruuduissa
-	*/
-	public int annaX() {
-		return this.x;
-	}
-	
-	/**
-	* Antaa tippuvan palikan keskipisteen y-koordinaatin
-	* 
-	* @return Y-koordinaatti ruuduissa
-	*/
-	public int annaY() {
-		return this.y;
-	}
-	
-	/**
-	* Antaa tippuvan palikan keskipisteen z-koordinaatin
-	* 
-	* @return Z-koordinaatti ruuduissa
-	*/
-	public int annaZ() {
-		return this.z;
-	}
-	
-	/**
-	* Antaa tippuvan palikan ilman tippumisen tai pyorimisen tietoja.
-	* 
-	* @return Palikka
-	*/
-	public Palikka annaPalikka() {
-		return this.palikka;
 	}
 	
 	//*******************************************
@@ -124,16 +47,11 @@ public class TippuvaPalikka {
 	* @return Tieto siita pystyttiinko palikkaa siirtamaan.
 	*/
 	public boolean siirra(int dx, int dy, int dz) {
-		if (!mahtuukoPalikkaKenttaan(dx, dy, dz)) {
+		if (!super.siirra(dx, dy, dz)) {
 			return false;
 		}
 		
-		this.x += dx;
-		this.y += dy;
-		this.z += dz;
-		
 		this.peli.paivita();
-		
 		return true;
 	}
 	
@@ -147,7 +65,7 @@ public class TippuvaPalikka {
 			tiputusKorkeus++;
 		}
 		
-		kentta.jahmetaPalikka(this.palikka, this.x, this.y, this.z, tiputusKorkeus);
+		annaKentta().jahmetaPalikka(annaPalikka(), annaX(), annaY(), annaZ(), tiputusKorkeus);
 		this.peli.haeUusiPalikkaKenttaan();
 	}
 	
@@ -222,19 +140,10 @@ public class TippuvaPalikka {
 	* @param y 1 pyorittaa alatahkon esille, -1 ylatahkon
 	*/
 	public boolean pyoritaSuuntaEsille(int x, int y) {
-		this.palikka.pyoritaSuuntaEsille(x, y);
-		
-		if (mahtuukoPalikkaKenttaan(0, 0, 0)) {
+		if (super.pyoritaSuuntaEsille(x,y)) {
 			selvitaPyorityksenAnimointi(x, y);
 			return true;
-		}
-		
-		if (siirtelyMahdollistaaPyorityksen()) {
-			selvitaPyorityksenAnimointi(x, y);
-			return true;
-		}
-		else {
-			this.palikka.pyoritaSuuntaEsille(-x, -y);
+		} else {
 			return false;
 		}
 	}
@@ -259,19 +168,10 @@ public class TippuvaPalikka {
 	* @param myotapaivaan Tieto siita pyoritetaanko myotapaivaan vai vastakkaiseen suuntaan
 	*/
 	public boolean pyoritaMyotapaivaan(boolean myotapaivaan) {
-		this.palikka.pyoritaMyotapaivaan(myotapaivaan);
-		
-		if (mahtuukoPalikkaKenttaan(0, 0, 0)) {
+		if (super.pyoritaMyotapaivaan(myotapaivaan)) {
 			selvitaPyorityksenAnimointi(myotapaivaan);
 			return true;
-		}
-		
-		if (siirtelyMahdollistaaPyorityksen()) {
-			selvitaPyorityksenAnimointi(myotapaivaan);
-			return true;
-		}
-		else {
-			this.palikka.pyoritaMyotapaivaan(!myotapaivaan);
+		} else {
 			return false;
 		}
 	}
@@ -290,95 +190,4 @@ public class TippuvaPalikka {
 		}
 	}
 	
-	//*******************************************
-	//
-	// siirtelyita pyorittamisen mahdollistamiseksi
-	//
-	//*******************************************
-	
-	private boolean siirtelyMahdollistaaPyorityksen() {
-		if (yksinkertainenSiirtelyMahdollistaaPyorityksen()) {
-			return true;
-		}
-		if (lyhytKulmasiirtelyMahdollistaaPyorityksen()) {
-			return true;
-		}
-		if (kahdenVerranSiirtelyMahdollistaaPyorityksen()) {
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean yksinkertainenSiirtelyMahdollistaaPyorityksen() {
-		for (int dx = -1; dx <= 1; dx += 2) {
-			if (mahtuukoPalikkaKenttaan(dx, 0, 0)) {
-				this.x += dx;
-				return true;
-			}
-		}
-		for (int dy = -1; dy <= 1; dy += 2) {
-			if (mahtuukoPalikkaKenttaan(0, dy, 0)) {
-				this.y += dy;
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean lyhytKulmasiirtelyMahdollistaaPyorityksen() {
-		for (int dx = -1; dx <= 1; dx += 2) {
-			for (int dy = -1; dy <= 1; dy += 2) {
-				
-				if (mahtuukoPalikkaKenttaan(dx, dy, 0)) {
-					this.x += dx;
-					this.y += dy;
-					return true;
-				}
-			
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean kahdenVerranSiirtelyMahdollistaaPyorityksen() {
-		for (int dx = -2; dx <= 2; dx += 4) {
-			if (mahtuukoPalikkaKenttaan(dx, 0, 0)) {
-				this.x += dx;
-				return true;
-			}
-		}
-		for (int dy = -2; dy <= 2; dy += 4) {
-			if (mahtuukoPalikkaKenttaan(0, dy, 0)) {
-				this.y += dy;
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	// kenttaan mahtuminen
-	
-	private boolean mahtuukoPalikkaKenttaan(int dx, int dy, int dz) {
-		Pala[][][] palikka = this.palikka.annaPalikka();
-		int keskipiste = this.palikka.annaKeskipiste();
-		
-		for (int k=0; k<palikka[0][0].length; k++) {
-			for (int j=0; j<palikka[0].length; j++) {
-				for (int i=0; i<palikka.length; i++) {
-					
-					if (palikka[i][j][k] == Pala.TIPPUVA) {
-						if (!kentta.mahtuukoPalaKenttaan( i-keskipiste+x+dx, j-keskipiste+y+dy, k-keskipiste+z+dz)) {
-							return false;
-						}
-					}
-					
-				}
-			}
-		}
-		
-		return true;
-	}
 }
