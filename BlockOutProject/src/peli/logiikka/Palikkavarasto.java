@@ -21,17 +21,17 @@ public class Palikkavarasto {
 	
 	private void luoPalikat() {
 		/*
-		Palikka p = new Palikka(1, 2, 10);
-		p.lisaaPala(1,1,1);
+		Palikka p = new Palikka(1, 2, 10, new int[]{
+			1,1,1,
 		palikat.add( p );
 		
-		p = new Palikka(7, 5, 80);
-		p.lisaaPala(3,4,4);
-		p.lisaaPala(1,4,4);
-		p.lisaaPala(2,4,4);
-		p.lisaaPala(5,4,4);
-		p.lisaaPala(6,4,4);
-		p.lisaaPala(7,4,4);
+		p = new Palikka(7, 5, 80, new int[]{
+			3,4,4,
+			1,4,4,
+			2,4,4,
+			5,4,4,
+			6,4,4,
+			7,4,4,
 		palikat.add( p );
 		*/
 		if (setti == Palikkasetti.FLAT) {
@@ -52,320 +52,320 @@ public class Palikkavarasto {
 	}
 	
 	private void luoFlatExtendedPalikat() {
-		Palikka p = new Palikka(14, 156);
-		p.lisaaPala(3,3,3);
+		Palikka p = new Palikka(14, 156, new int[]{
+			3,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(14, 156);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
+		p = new Palikka(14, 156, new int[]{
+			3,3,3,
+			3,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(27, 307);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
+		p = new Palikka(27, 307, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3});
 		palikat.add( p );
 		
-		p = new Palikka(14, 156);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(14, 156, new int[]{
+			3,3,3,
+			3,4,3,
+			4,3,3,
+			4,4,3});
 		palikat.add( p );
 	}
 	
 	private void luoFlatBasicExtendedPalikat() {
-		Palikka p = new Palikka(27, 307);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
+		Palikka p = new Palikka(27, 307, new int[]{
+			3,3,3,
+			3,4,3,
+			4,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(40, 461);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,3,3);
+		p = new Palikka(40, 461, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3,
+			4,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(40, 461);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,2,3);
+		p = new Palikka(40, 461, new int[]{
+			3,3,3,
+			3,4,3,
+			4,3,3,
+			4,2,3});
 		palikat.add( p );
 		
-		p = new Palikka(27, 307);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,2,3);
+		p = new Palikka(27, 307, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3,
+			4,2,3});
 		palikat.add( p );
 		
 	}
 	
 	private void luoBasicExtendedPalikat() {
-		Palikka p = new Palikka(53, 552);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,3,2);
-		p.lisaaPala(2,3,2);
+		Palikka p = new Palikka(53, 552, new int[]{
+			3,3,3,
+			3,2,3,
+			3,3,2,
+			2,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(53, 552);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,3,2);
-		p.lisaaPala(4,3,2);
+		p = new Palikka(53, 552, new int[]{
+			3,3,3,
+			3,2,3,
+			3,3,2,
+			4,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(53, 552);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,3,2);
-		p.lisaaPala(4,3,3);
+		p = new Palikka(53, 552, new int[]{
+			3,3,3,
+			3,2,3,
+			3,3,2,
+			4,3,3});
 		palikat.add( p );
 	}
 	
 	private void luoExtendedPalikat() {
-		Palikka p = new Palikka(27, 307);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,5,3);
+		Palikka p = new Palikka(27, 307, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			3,5,3});
 		palikat.add( p );
 		
-		p = new Palikka(27, 307);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,1,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,5,3);
+		p = new Palikka(27, 307, new int[]{
+			3,3,3,
+			3,1,3,
+			3,2,3,
+			3,4,3,
+			3,5,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,1,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(5,3,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,1,3,
+			4,3,3,
+			5,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(5,3,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,3,3,
+			5,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			2,3,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(2,2,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			2,2,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(66, 780);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(2,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(66, 780, new int[]{
+			3,3,3,
+			2,3,3,
+			2,2,3,
+			3,4,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(66, 780);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,1,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(66, 780, new int[]{
+			3,3,3,
+			3,2,3,
+			3,1,3,
+			3,4,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,1,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,1,3,
+			3,4,3,
+			4,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1248);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,2,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(105, 1248, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,2,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(40, 461);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(40, 461, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,3,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(79, 921);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,1,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,4,3);
+		p = new Palikka(79, 921, new int[]{
+			3,3,3,
+			3,2,3,
+			3,1,3,
+			4,3,3,
+			4,4,3});
 		palikat.add( p );
 		
-		p = new Palikka(118, 1402);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(4,3,3);
+		p = new Palikka(118, 1402, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3,
+			2,3,3,
+			4,3,3});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,4,3);
-		p.lisaaPala(4,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,4,3,
+			4,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(2,4,3);
-		p.lisaaPala(2,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			2,4,3,
+			2,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(92, 965);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,3,2);
+		p = new Palikka(92, 965, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,3,3,
+			4,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(92, 965);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,2,3);
-		p.lisaaPala(3,3,2);
+		p = new Palikka(92, 965, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3,
+			4,2,3,
+			3,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(92, 965);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,2,3);
-		p.lisaaPala(3,3,2);
+		p = new Palikka(92, 965, new int[]{
+			3,3,3,
+			3,4,3,
+			3,2,3,
+			2,2,3,
+			3,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(2,4,3);
-		p.lisaaPala(2,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			2,3,3,
+			2,4,3,
+			2,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,4,3);
-		p.lisaaPala(4,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			4,3,3,
+			4,4,3,
+			4,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1103);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(4,3,2);
-		p.lisaaPala(4,4,2);
+		p = new Palikka(105, 1103, new int[]{
+			3,3,3,
+			3,2,3,
+			4,3,3,
+			4,3,2,
+			4,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1103);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(2,3,2);
-		p.lisaaPala(2,4,2);
+		p = new Palikka(105, 1103, new int[]{
+			3,3,3,
+			3,2,3,
+			2,3,3,
+			2,3,2,
+			2,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			4,2,3,
+			3,4,3,
+			3,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,4,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			2,2,3,
+			3,4,3,
+			3,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(79, 827);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(3,3,2);
+		p = new Palikka(79, 827, new int[]{
+			3,3,3,
+			2,3,3,
+			4,3,3,
+			3,4,3,
+			3,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(40, 461);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,4,3);
-		p.lisaaPala(3,3,2);
+		p = new Palikka(40, 461, new int[]{
+			3,3,3,
+			4,3,3,
+			3,4,3,
+			4,4,3,
+			3,3,2});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1103);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(3,4,3);
-		p.lisaaPala(4,4,3);
-		p.lisaaPala(3,4,2);
+		p = new Palikka(105, 1103, new int[]{
+			3,3,3,
+			3,2,3,
+			3,4,3,
+			4,4,3,
+			3,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1103);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(3,3,2);
-		p.lisaaPala(3,4,2);
+		p = new Palikka(105, 1103, new int[]{
+			3,3,3,
+			3,2,3,
+			4,3,3,
+			3,3,2,
+			3,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(105, 1103);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(2,3,3);
-		p.lisaaPala(3,3,2);
-		p.lisaaPala(3,4,2);
+		p = new Palikka(105, 1103, new int[]{
+			3,3,3,
+			3,2,3,
+			2,3,3,
+			3,3,2,
+			3,4,2});
 		palikat.add( p );
 		
-		p = new Palikka(131, 1379);
-		p.lisaaPala(3,3,3);
-		p.lisaaPala(3,2,3);
-		p.lisaaPala(4,3,3);
-		p.lisaaPala(3,2,2);
-		p.lisaaPala(4,3,2);
+		p = new Palikka(131, 1379, new int[]{
+			3,3,3,
+			3,2,3,
+			4,3,3,
+			3,2,2,
+			4,3,2});
 		palikat.add( p );
 	}
 	

@@ -17,9 +17,10 @@ public class Palikka {
 	* 
 	* @param alapisteet Alemmat peruspisteet
 	* @param ylapisteet Ylemmat peruspisteet
+	* @param koordinaatit Palojen koordinaatit taulukkona, jossa on kolmella jaollinen lukumäärä koordinaatteja
 	*/
-	public Palikka(int alapisteet, int ylapisteet) {
-		this(5, alapisteet, ylapisteet);
+	public Palikka(int alapisteet, int ylapisteet, int koordinaatit[]) {
+		this(5, alapisteet, ylapisteet, koordinaatit);
 	}
 	
 	/**
@@ -28,8 +29,22 @@ public class Palikka {
 	* @param koko Palikan leveys/korkeus/syvyys
 	* @param alapisteet Alemmat peruspisteet
 	* @param ylapisteet Ylemmat peruspisteet
+	* @param koordinaatit Palojen koordinaatit taulukkona, jossa on kolmella jaollinen lukumäärä koordinaatteja
 	*/
-	public Palikka(int koko, int alapisteet, int ylapisteet) {
+	public Palikka(int koko, int alapisteet, int ylapisteet, int koordinaatit[]) {
+		this(koko, alapisteet, ylapisteet);
+		if (koordinaatit.length%3 != 0) {
+			throw new IllegalArgumentException();
+		}
+		for(int i = 0; i < koordinaatit.length; i+=3) {
+			lisaaPala(koordinaatit[i], koordinaatit[i+1], koordinaatit[i+2]);
+		}
+		
+		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
+		this.sarmat = kulmahaku.haeSarmat();
+		laskeHashCode();
+	}
+	private Palikka(int koko, int alapisteet, int ylapisteet) {
 		if (koko%2 == 0) {
 			koko++;
 		}
@@ -66,19 +81,13 @@ public class Palikka {
 	* @param z Palan z-koordinaatti
 	* @return Tieto siita onnistuiko palikan lisaaminen vai ei
 	*/
-	public boolean lisaaPala(int x, int y, int z) {
+	private void lisaaPala(int x, int y, int z) {
 		if (this.palikka[x-1][y-1][z-1] == Pala.TIPPUVA) {
-			return false;
+			return;
 		}
 		
 		this.palikka[x-1][y-1][z-1] = Pala.TIPPUVA;
 		this.palojenMaara++;
-		
-		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
-		this.sarmat = kulmahaku.haeSarmat();
-		laskeHashCode();
-		
-		return true;
 	}
 	
 	/**
@@ -98,6 +107,10 @@ public class Palikka {
 				}
 			}
 		}
+		
+		Kulmahaku kulmahaku = new Kulmahaku(kopioituPalikka.palikka);
+		kopioituPalikka.sarmat = kulmahaku.haeSarmat();
+		kopioituPalikka.laskeHashCode();
 		
 		return kopioituPalikka;
 	}
