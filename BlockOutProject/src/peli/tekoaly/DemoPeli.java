@@ -18,7 +18,7 @@ public class DemoPeli extends Peli {
   public DemoPeli(DemoIkkuna ikkuna, Asetukset asetukset, Ennatyslistaaja ennatyslistaaja) {
     super(ikkuna.getKayttis(), asetukset, ennatyslistaaja);
     emoIkkuna = ikkuna;
-		aly = new TekoAly(this,700);
+		aly = TekoAly.annaTekoAly(this,400);
     
     //Poistetaan normaali näppäinkuuntelija
     for (KeyListener l : getKeyListeners()) {
@@ -45,6 +45,7 @@ public class DemoPeli extends Peli {
   }
 	public void aloitaPeli() {
 		super.aloitaPeli();
+		aly.uusiPalikka();
 		aly.start();
 	}
 	public void asetaPeliTauolle(boolean tauolla) {
