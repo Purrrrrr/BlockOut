@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Deque;
+import java.util.List;
 import java.util.LinkedList;
 
 public class Palikka {
@@ -16,7 +17,9 @@ public class Palikka {
 	private HashMap<Integer, Pala[][][]> pyoritetytVersiot;
 	/** Muunnos hashcodesta ja pyöräytyksestä pyöräytetyn palan hashcodeen */
 	private HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset;
-	/** Palikan särmäkoordinaatin hashcoden mukaan talletettuna */
+	/** Palikan palojen koordinaatit hashcoden mukaan talletettuna. Tämä on optimointi mahtumistarkistuksia varten. */
+	private HashMap<Integer, List<Koordinaatti>> pyoraytetytPalakoordinaatit;
+	/** Palikan särmäkoordinaatit hashcoden mukaan talletettuna */
 	private HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>> pyoraytetytSarmat;
 	
 	/** Tämänhetkinen palikka */
@@ -82,6 +85,7 @@ public class Palikka {
 		this.pyoraytetytSarmat = toinen.pyoraytetytSarmat;
 		this.sarmat = toinen.sarmat;
 		this.hashcode = toinen.hashcode;
+		this.pyoraytetytPalakoordinaatit = toinen.pyoraytetytPalakoordinaatit;
 	}
 	
 	/**
@@ -124,6 +128,7 @@ public class Palikka {
 		pyoritetytVersiot = new HashMap<Integer, Pala[][][]>();
 		pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();
 		pyoraytetytSarmat = new HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>>();
+	  pyoraytetytPalakoordinaatit = new HashMap<Integer, List<Koordinaatti>>();
 
 		PalikkaPyorayttaja.Pyoraytys[] pyoritykset = PalikkaPyorayttaja.Pyoraytys.values();
 
@@ -166,19 +171,18 @@ public class Palikka {
 
 			Kulmahaku kulmahaku = new Kulmahaku(pyoritettypalikka);
 			pyoraytetytSarmat.put(hc, kulmahaku.haeSarmat());
-
-			/*
-			System.out.println("Pyöräytys! "+hc);
-			HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hc);
-			if (p == null) {
-				System.out.println("!!");
-			} else {
-				for (Integer i : p.values()) {
-					System.out.print(i+",");
+			
+			List<Koordinaatti> palat = new ArrayList<Koordinaatti>();
+			for (int k=0; k<pyoritettypalikka[0][0].length; k++) {
+				for (int j=0; j<pyoritettypalikka[0].length; j++) {
+					for (int i=0; i<pyoritettypalikka.length; i++) {
+						if (pyoritettypalikka[i][j][k] == Pala.TIPPUVA) {
+							palat.add(new Koordinaatti(i,j,k));
+						}
+					}
 				}
-				System.out.println();
 			}
-			*/
+			pyoraytetytPalakoordinaatit.put(hc, palat);
 		}
 	}
 
@@ -209,6 +213,10 @@ public class Palikka {
 		return this.palikka;
 	}
 	
+	public List<Koordinaatti> annaPalaKoordinaatit() {
+		return this.pyoraytetytPalakoordinaatit.get(hashcode);
+	}
+
 	/**
 	* Antaa palikan keskipisteen koordinaatin. Keskipisteen koordinaatti on kaikista suunnista samassa kohdassa.
 	* 

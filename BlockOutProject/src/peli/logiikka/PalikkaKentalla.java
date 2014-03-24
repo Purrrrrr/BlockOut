@@ -306,23 +306,8 @@ public class PalikkaKentalla {
 	// kenttaan mahtuminen
 	
 	private boolean mahtuukoPalikkaKenttaan(int dx, int dy, int dz) {
-		Pala[][][] palikka = this.palikka.annaPalikka();
 		int keskipiste = this.palikka.annaKeskipiste();
-		
-		for (int k=0; k<palikka[0][0].length; k++) {
-			for (int j=0; j<palikka[0].length; j++) {
-				for (int i=0; i<palikka.length; i++) {
-					
-					if (palikka[i][j][k] == Pala.TIPPUVA) {
-						if (!kentta.mahtuukoPalaKenttaan( i-keskipiste+x+dx, j-keskipiste+y+dy, k-keskipiste+z+dz)) {
-							return false;
-						}
-					}
-					
-				}
-			}
-		}
-		
-		return true;
+
+		return kentta.mahtuvatkoPalatKenttaan(this.palikka.annaPalaKoordinaatit(), x+dx-keskipiste, y+dy-keskipiste, z+dz-keskipiste);
 	}
 }

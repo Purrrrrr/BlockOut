@@ -1,7 +1,9 @@
 package peli.logiikka;
 
 import peli.Peli;
+import peli.Koordinaatti;
 import peli.asetukset.logiikka.Ulottuvuudet;
+import java.util.List;
 
 public class Kentta {
 	private Peli peli;
@@ -211,6 +213,34 @@ public class Kentta {
 			//kentan edessa olevat palaset
 			return true;
 		}
+	}
+	/**
+	* Selvittaako mahtuuko lista paloja kenttaan. Jos pala on kuilun sivujen ulkopuolella palauttaa false. Jos pala on kuilun edessa, mutta sivujen sisapuolella palauttaa true.
+	* 
+	* @param palaKoordinaatit Palojen x,y,z-koordinaatit suhteessa palaan
+	* @param dx Palan x-koordinaatin säätö
+	* @param dy Palan y-koordinaatin säätö
+	* @param dz Palan z-koordinaatin säätö
+	* @return Tieto siita mahtuuko pala kenttaan vai ei
+	*/
+	public boolean mahtuvatkoPalatKenttaan(List<Koordinaatti> palat, int dx, int dy, int dz) {
+		for(Koordinaatti k : palat) {
+			int x = k.annaX()+dx;
+			int y = k.annaY()+dy;
+			int z = k.annaZ()+dz;
+			try {
+				if( kentta[x][y][z] != Pala.TYHJA ) {
+					return false;
+				}
+			} catch (IndexOutOfBoundsException e) {
+				//kentan reunojen sisalla olevat palaset
+				if (x<1 || y<1 || x>this.leveys || y>this.korkeus) {
+					return false;
+				}
+				//kentan edessa olevat palaset paastetaan lapi.
+			}
+		}
+		return true;
 	}
 	
 	/**
