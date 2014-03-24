@@ -19,7 +19,7 @@ public class AlykasTekoAly extends TekoAly {
 		for(int i = 0; i < 7; i++) {
 			siirrot.add(Siirto.satunnainenSiirto());
 		}
-		//annaPyoraytykset();
+		annaPyoraytykset();
 		asetaSiirtoSuunnitelma(siirrot);
 	}
 
@@ -35,17 +35,15 @@ public class AlykasTekoAly extends TekoAly {
 		
 		tutkittavat.add(juuri);
 
-		int i = 0;
-
 		while(!tutkittavat.isEmpty()) {
 			PalikkaKentalla tutkittava = tutkittavat.pop();
 			tutkitut.add(tutkittava);
 			//System.out.println("Tutkittava: "+tutkittava.hashCode());
 
 			for(Siirto s : siirrot) {
-				PalikkaKentalla uusi = tutkittava.kopioi();
-				i++;
+				PalikkaKentalla uusi = new PalikkaKentalla(tutkittava);
 				if (!s.suorita(uusi)) continue;
+
 				//System.out.println("Naapuri: "+uusi.hashCode());
 
 				if (!tutkitut.contains(uusi)) {
@@ -58,8 +56,6 @@ public class AlykasTekoAly extends TekoAly {
 			}*/
 
 		}
-		System.out.println("Käännöksiä "+i);
-		System.out.println("Siirtoja "+tutkitut.size());
 		
 		return null;
 	}

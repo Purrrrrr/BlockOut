@@ -31,9 +31,13 @@ public class PalikkaKentalla {
 		this.y = y;
 		this.z = z;
 	}
-
-	public PalikkaKentalla kopioi() {
-		return new PalikkaKentalla(palikka.kopioi(), kentta, x, y, z);
+	public PalikkaKentalla(PalikkaKentalla toinen) {
+		this.palikka = new Palikka(toinen.palikka);
+		this.kentta = toinen.kentta;
+		
+		this.x = toinen.x;
+		this.y = toinen.y;
+		this.z = toinen.z;
 	}
 	
 	private void mahdutaPalikkaKenttaan() {

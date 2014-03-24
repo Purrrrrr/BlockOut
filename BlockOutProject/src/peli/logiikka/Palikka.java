@@ -69,8 +69,28 @@ public class Palikka {
 		this.alapisteet = alapisteet;
 		this.ylapisteet = ylapisteet;
 		this.palojenMaara = 0;
+	}
+	public Palikka(Palikka toinen) {
+		this.koko = toinen.koko;
+		this.alapisteet = toinen.alapisteet;
+		this.ylapisteet = toinen.ylapisteet;
+		this.palojenMaara = toinen.palojenMaara;
 		
-		this.sarmat = new HashMap<Koordinaatti, ArrayList<Koordinaatti>>();
+		this.palikka = toinen.palikka;
+		this.pyoritetytVersiot = toinen.pyoritetytVersiot;
+		this.pyoraytykset = toinen.pyoraytykset;
+		this.pyoraytetytSarmat = toinen.pyoraytetytSarmat;
+		this.sarmat = toinen.sarmat;
+		this.hashcode = toinen.hashcode;
+	}
+	
+	/**
+	* Kopioi alkuperaisen palikan niin, etta alkuperaista palikkaa ei pyoriteta pelin aikana.
+	* 
+	* @return Kopioitu palikka
+	*/
+	public Palikka kopioi() {
+		return new Palikka(this);
 	}
 	
 	private void palikanTyhjaksiAlustus(Pala[][][] palikka) {
@@ -178,24 +198,6 @@ public class Palikka {
 			}
 		}
 		return code;
-	}
-	
-	/**
-	* Kopioi alkuperaisen palikan niin, etta alkuperaista palikkaa ei pyoriteta pelin aikana.
-	* 
-	* @return Kopioitu palikka
-	*/
-	public Palikka kopioi() {
-		Palikka kopioituPalikka = new Palikka( koko, this.alapisteet, this.ylapisteet );
-		
-		kopioituPalikka.palikka = this.palikka;
-		kopioituPalikka.pyoritetytVersiot = this.pyoritetytVersiot;
-		kopioituPalikka.pyoraytykset = this.pyoraytykset;
-		kopioituPalikka.pyoraytetytSarmat = this.pyoraytetytSarmat;
-		kopioituPalikka.sarmat = this.sarmat;
-		kopioituPalikka.hashcode = this.hashcode;
-		
-		return kopioituPalikka;
 	}
 	
 	/**
