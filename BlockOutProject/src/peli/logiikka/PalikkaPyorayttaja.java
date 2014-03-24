@@ -3,6 +3,15 @@ package peli.logiikka;
 public class PalikkaPyorayttaja {
 	private Pala[][][] palikka;
 	private int koko;
+
+	public enum Pyoraytys {
+		MYOTAPAIVA(),
+		VASTAPAIVA(),
+		VASENESILLE(),
+		OIKEAESILLE(),
+		ALAESILLE(),
+		YLAESILLE();
+	}
 	
 	/**
 	* Osaa pyoraytella 3D-taulukoita, jotka on rakennettu Paloista.
@@ -12,6 +21,26 @@ public class PalikkaPyorayttaja {
 	public PalikkaPyorayttaja(Pala[][][] palikka) {
 		this.palikka = palikka;
 		this.koko = palikka.length; //kaikkiin suuntiin saman kokoinen
+	}
+	
+	public Pala[][][] pyorita(Pyoraytys suunta) {
+		Pala[][][] uusi = new Pala[this.koko][this.koko][this.koko];
+
+		switch(suunta) {
+			case MYOTAPAIVA:
+				return pyoritaMyotapaivaan(uusi);
+			case VASTAPAIVA:
+				return pyoritaVastapaivaan(uusi);
+			case VASENESILLE:
+				return pyoritaVasenPuoliEsille(uusi);
+			case OIKEAESILLE:
+				return pyoritaOikeaPuoliEsille(uusi);
+			case ALAESILLE:
+				return pyoritaAlapuoliEsille(uusi);
+			case YLAESILLE:
+				return pyoritaYlapuoliEsille(uusi);
+		}
+		return uusi;
 	}
 	
 	/**

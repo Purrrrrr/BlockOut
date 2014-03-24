@@ -3,12 +3,25 @@ package peli.logiikka;
 import peli.Koordinaatti;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class Palikka {
-	private Pala[][][] palikka;
 	private int koko;
 	private int alapisteet, ylapisteet, palojenMaara;
+
+	/** Palikan kaikki pyöräytetyt versiot hashcoden mukaan talletettuna */
+	private HashMap<Integer, Pala[][][]> pyoritetytVersiot;
+	/** Muunnos hashcodesta ja pyöräytyksestä pyöräytetyn palan hashcodeen */
+	private HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset;
+	/** Palikan särmäkoordinaatin hashcoden mukaan talletettuna */
+	private HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>> pyoraytetytSarmat;
+	
+	/** Tämänhetkinen palikka */
+	private Pala[][][] palikka;
+	/** Tämänhetkiset särmäkoordinaatit */
 	private HashMap<Koordinaatti, ArrayList<Koordinaatti>> sarmat;
 	int hashcode = 0;
 	
@@ -40,9 +53,10 @@ public class Palikka {
 			lisaaPala(koordinaatit[i], koordinaatit[i+1], koordinaatit[i+2]);
 		}
 		
-		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
-		this.sarmat = kulmahaku.haeSarmat();
-		laskeHashCode();
+		alustaPyoraytykset();
+		hashcode = laskeHashCode(this.palikka);
+		this.sarmat = pyoraytetytSarmat.get(hashcode);
+		
 	}
 	private Palikka(int koko, int alapisteet, int ylapisteet) {
 		if (koko%2 == 0) {
@@ -69,10 +83,6 @@ public class Palikka {
 		}
 	}
 	
-	//012
-	//01234
-	//0123456
-	
 	/**
 	* Lisaa palikkaan palan.
 	* 
@@ -89,6 +99,86 @@ public class Palikka {
 		this.palikka[x-1][y-1][z-1] = Pala.TIPPUVA;
 		this.palojenMaara++;
 	}
+
+	private void alustaPyoraytykset() {
+		pyoritetytVersiot = new HashMap<Integer, Pala[][][]>();
+		pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();
+		pyoraytetytSarmat = new HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>>();
+
+		PalikkaPyorayttaja.Pyoraytys[] pyoritykset = PalikkaPyorayttaja.Pyoraytys.values();
+
+		Pala[][][] juuri = palikka;
+		
+		Deque<Pala[][][]> tutkittavat = new LinkedList<Pala[][][]>();
+		tutkittavat.add(juuri);
+		
+		/*
+		deb(juuri);
+		/**/
+
+		while(!tutkittavat.isEmpty()) {
+			Pala[][][] tutkittava = tutkittavat.pop();
+
+			int tutkittavanHashcode = laskeHashCode(tutkittava);
+			pyoritetytVersiot.put(tutkittavanHashcode, tutkittava);
+
+			//System.out.println("Tutkittava: "+tutkittavanHashcode);
+			HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> palikanPyoraytykset;
+			palikanPyoraytykset = new HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>();
+			pyoraytykset.put(tutkittavanHashcode, palikanPyoraytykset);
+
+			for(PalikkaPyorayttaja.Pyoraytys p :  pyoritykset) {
+				PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja(tutkittava);
+				Pala[][][] uusi = pyorayttaja.pyorita(p);
+				int pyoraytetynHashcode = laskeHashCode(uusi);
+
+				if (!pyoritetytVersiot.containsKey(pyoraytetynHashcode)) {
+					pyoritetytVersiot.put(pyoraytetynHashcode, uusi);
+					tutkittavat.add(uusi);
+				}
+				palikanPyoraytykset.put(p, pyoraytetynHashcode);
+
+			}
+		}
+		for (Map.Entry<Integer, Pala[][][]> entry : pyoritetytVersiot.entrySet()) {
+			Integer hc = entry.getKey();
+			Pala[][][] pyoritettypalikka = entry.getValue();
+
+			Kulmahaku kulmahaku = new Kulmahaku(pyoritettypalikka);
+			pyoraytetytSarmat.put(hc, kulmahaku.haeSarmat());
+
+			/*
+			System.out.println("Pyöräytys! "+hc);
+			HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hc);
+			if (p == null) {
+				System.out.println("!!");
+			} else {
+				for (Integer i : p.values()) {
+					System.out.print(i+",");
+				}
+				System.out.println();
+			}
+			*/
+		}
+	}
+
+	private int laskeHashCode(Pala[][][] laskettava) {
+		int code = 0;
+		int exp = 1;
+
+		for (int k=0; k<laskettava[0][0].length; k++) {
+			for (int j=0; j<laskettava[0].length; j++) {
+				for (int i=0; i<laskettava.length; i++) {
+					if (laskettava[i][j][k] == Pala.TIPPUVA) {
+						int subcode = i<<8 + j<<4 + k;
+						code += exp * subcode;
+					}
+					exp *= 31;
+				}
+			}
+		}
+		return code;
+	}
 	
 	/**
 	* Kopioi alkuperaisen palikan niin, etta alkuperaista palikkaa ei pyoriteta pelin aikana.
@@ -98,19 +188,12 @@ public class Palikka {
 	public Palikka kopioi() {
 		Palikka kopioituPalikka = new Palikka( koko, this.alapisteet, this.ylapisteet );
 		
-		for (int i=0; i<koko; i++) {
-			for (int j=0; j<koko; j++) {
-				for (int k=0; k<koko; k++) {
-					if (palikka[i][j][k] == Pala.TIPPUVA) {
-						kopioituPalikka.lisaaPala(i+1,j+1,k+1);;
-					}
-				}
-			}
-		}
-		
-		Kulmahaku kulmahaku = new Kulmahaku(kopioituPalikka.palikka);
-		kopioituPalikka.sarmat = kulmahaku.haeSarmat();
-		kopioituPalikka.laskeHashCode();
+		kopioituPalikka.palikka = this.palikka;
+		kopioituPalikka.pyoritetytVersiot = this.pyoritetytVersiot;
+		kopioituPalikka.pyoraytykset = this.pyoraytykset;
+		kopioituPalikka.pyoraytetytSarmat = this.pyoraytetytSarmat;
+		kopioituPalikka.sarmat = this.sarmat;
+		kopioituPalikka.hashcode = this.hashcode;
 		
 		return kopioituPalikka;
 	}
@@ -226,15 +309,42 @@ public class Palikka {
 	* @param y Haluttu tahko on ylapuoli (y=-1) tai alapuoli (y=1), jos muu tahko niin 0
 	*/
 	public void pyoritaSuuntaEsille(int x, int y) {
-		Pala[][][] uusi = new Pala[koko][koko][koko];
-		palikanTyhjaksiAlustus(uusi);
+		PalikkaPyorayttaja.Pyoraytys pyoraytys;
+		if (y == 1) {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.ALAESILLE;
+		}
+		else if (y == -1) {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.YLAESILLE;
+		}
+		else if (x == -1) {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.VASENESILLE;
+		}
+		else if (x == 1) {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.OIKEAESILLE;
+		} else {
+			return;
+		}
+
+    HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hashcode);
+		hashcode = p.get(pyoraytys);
 		
+		/*
 		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
-		this.palikka = pyorayttaja.pyoritaSuuntaEsille(uusi, x, y);
+		Pala[][][] verrokki = new Pala[koko][koko][koko];
+		verrokki = pyorayttaja.pyoritaSuuntaEsille(verrokki, x, y);
+		/**/
+
+		this.sarmat = pyoraytetytSarmat.get(hashcode);
+		this.palikka = pyoritetytVersiot.get(hashcode);
 		
-		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
-		this.sarmat = kulmahaku.haeSarmat();
-		laskeHashCode();
+		/*
+		if (!cmp(palikka, verrokki)) {
+			System.out.println("Vääryys!"+x+","+y);
+			deb(palikka);
+			deb(verrokki);
+		}
+		/**/
+
 	}
 	
 	/**
@@ -243,33 +353,74 @@ public class Palikka {
 	* @param myotapaivaan Tieto siita pyoritetaanko myotapaivaan vai vastakkaiseen suuntaan
 	*/
 	public void pyoritaMyotapaivaan(boolean myotapaivaan) {
-		Pala[][][] uusi = new Pala[koko][koko][koko];
-		palikanTyhjaksiAlustus(uusi);
-		
-		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
-		this.palikka = pyorayttaja.pyoritaMyotapaivaan(uusi, myotapaivaan);
-		
-		Kulmahaku kulmahaku = new Kulmahaku(this.palikka);
-		this.sarmat = kulmahaku.haeSarmat();
-		laskeHashCode();
-	}
+		PalikkaPyorayttaja.Pyoraytys pyoraytys;
+		if (myotapaivaan) {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.MYOTAPAIVA;
+		} else {
+			pyoraytys = PalikkaPyorayttaja.Pyoraytys.VASTAPAIVA;
+		}
 
-	private void laskeHashCode() {
-		hashcode = 0;
-		int exp = 1;
+    HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hashcode);
+		hashcode = p.get(pyoraytys);
+		
+		/*
+		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
+		Pala[][][] verrokki = new Pala[koko][koko][koko];
+		verrokki = pyorayttaja.pyoritaMyotapaivaan(verrokki, myotapaivaan);
+		*/
+
+		this.sarmat = pyoraytetytSarmat.get(hashcode);
+		this.palikka = pyoritetytVersiot.get(hashcode);
+		
+		/*
+		if (!cmp(palikka, verrokki)) {
+			System.out.println("Vääryys! "+(myotapaivaan?"myota":"vasta")+"paivaan");
+			deb(palikka);
+			deb(verrokki);
+		}
+	  /**/
+	}
+	
+	/*
+	private boolean cmp(Pala[][][] a, Pala[][][] b) {
+		Pala[][][] palikka = a;
+		Pala[][][] palikka2 = b;
+		
+		if (palikka.length != palikka2.length) return false;
+		if (palikka[0].length != palikka2[0].length) return false;
+		if (palikka[0][0].length != palikka2[0][0].length) return false;
 
 		for (int k=0; k<palikka[0][0].length; k++) {
 			for (int j=0; j<palikka[0].length; j++) {
 				for (int i=0; i<palikka.length; i++) {
-					if (palikka[i][j][k] == Pala.TIPPUVA) {
-						int subcode = i<<16 + j<<8 + k;
-						hashcode += exp * subcode;
-						exp *= 31;
+					if (palikka[i][j][k] != palikka2[i][j][k]) {
+						return false;
 					}
 				}
 			}
 		}
+		return true;
 	}
+	private void deb(Pala[][][] palikka) {
+		System.out.println("Palikka!");
+
+		for (int i=0; i<koko; i++) {
+			for (int j=0; j<koko; j++) {
+				for (int k=0; k<koko; k++) {
+					if (palikka[i][j][k] == Pala.TIPPUVA) {
+						System.out.print("*");
+					} else {
+						System.out.print(" ");
+					}
+				}
+				System.out.print("|");
+			}
+			System.out.println();
+		}
+
+	}
+	*/
+
 	public int hashCode() {
 		return hashcode;
 	}

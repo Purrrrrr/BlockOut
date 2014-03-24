@@ -51,7 +51,10 @@ public class TippuvaPalikka extends PalikkaKentalla {
 			return false;
 		}
 		
-		this.peli.paivita();
+		//Joskus tätä kutsutaan konstruktorissa ennen pelin asettamista ja koodi kaatuu, jos ei laita tarkistusta.
+		if (this.peli != null) {
+			this.peli.paivita();
+		}
 		return true;
 	}
 	
