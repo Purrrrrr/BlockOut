@@ -1,38 +1,50 @@
 package peli.grafiikka;
 
+import peli.asetukset.logiikka.Ulottuvuudet;
+import peli.Peli;
 import peli.Koordinaatti;
 import peli.logiikka.Pala;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 
 public class Reunapiirturi {
+	private Image valimuisti;
 	private Piste3DHaku piste;
-	private Pala[][][] kentta;
+	int syvyys, korkeus, leveys;
 	
 	/**
 	* Piirtaa pelattavan kentan kuilujen seinamat.
 	* 
 	* @param piste3DHaku 3D-pisteiden koordinaattien hakija
 	*/
-	public Reunapiirturi(Piste3DHaku piste3DHaku) {
-		this.piste = piste3DHaku;
+	public Reunapiirturi(Peli p, int ruudunLeveys, int ruudunKorkeus, Ulottuvuudet ulottuvuudet, Piste3DHaku piste3DHaku) {
+
+		/* Alustetaan kentän leveys, korkeus ja syvyys. 
+		 * Lisätään samalla arvoihin reunan vaatimat mitat */
+		leveys = ulottuvuudet.annaLeveys() + 2;
+		korkeus = ulottuvuudet.annaKorkeus() + 2;
+		syvyys = ulottuvuudet.annaSyvyys() + 1;
+		piste = piste3DHaku;
+
+		valimuisti = p.createImage(ruudunLeveys,ruudunKorkeus);
+		Graphics g = valimuisti.getGraphics();
+		piirraValimuistiin(g);
+		g.dispose();
 	}
 	
+	public void piirra(Graphics g) {
+		g.drawImage(valimuisti, 0,0, null);
+	}
+
 	/**
 	* Piirtaa pelattavan kentan kuilujen seinamat.
 	* 
 	* @param g Graphics
-	* @param kentta Piirrettava kentta missa kuilun reunat on Pala.REUNA tyyppisia
 	*/
-	public void piirra(Graphics g, Pala[][][] kentta) {
+	public void piirraValimuistiin(Graphics g) {
 		g.setColor(Color.GREEN.darker());
-		
-		this.kentta = kentta;
-		
-		int syvyys = kentta[0][0].length;
-		int korkeus = kentta[0].length;
-		int leveys = kentta.length;
 		
 		piirraPohja(g, leveys, korkeus, syvyys);
 		
@@ -141,9 +153,6 @@ public class Reunapiirturi {
 	}
 	
 	private void piirraSivu(Graphics g, int i, int j, int k, int xSivu, int ySivu, int zSivu) {
-		if (kentta[i][j][k] != Pala.REUNA) {
-			return;
-		}
 		
 		if (xSivu==0) {
 			Koordinaatti vasenKoordinaatti = piste.koordinaatit(i, j, k, -1, ySivu, zSivu);

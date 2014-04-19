@@ -62,7 +62,7 @@ public class Piirturi {
 	}
 	
 	private void luoSisaisetPiirturit(Varit varit, Ulottuvuudet ulottuvuudet, Pistelaskija pistelaskija, Ennatyslistaaja ennatyslistaaja) {
-		this.reunapiirturi = new Reunapiirturi(this.piste3DHaku);
+		this.reunapiirturi = new Reunapiirturi(peli, ikkunanLeveys, ikkunanKorkeus, ulottuvuudet, this.piste3DHaku);
 		
 		this.palikkapiirturi = new Palikkapiirturi(this.piste3DHaku, varit.annaVarit());
 		
@@ -100,7 +100,7 @@ public class Piirturi {
 	* @param palojaSisaltavienKerrostenMaara Paloja sisaltavien kerrosten maara
 	*/
 	public void piirra(Graphics g, Pala[][][] kuilu, TippuvaPalikka tippuvaPalikka, int palojaSisaltavienKerrostenMaara) {
-		this.reunapiirturi.piirra(g, kuilu);
+		this.reunapiirturi.piirra(g);
 		this.palikkapiirturi.piirra(g, kuilu);
 		
 		if (!peli.onkoTauolla()) {
