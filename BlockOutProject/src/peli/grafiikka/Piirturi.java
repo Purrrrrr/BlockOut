@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.awt.Image;
 
 public class Piirturi {
 	private Peli peli;
@@ -28,6 +29,9 @@ public class Piirturi {
 	private Statistiikkapiirturi statistiikkapiirturi;
 	
 	private int ikkunanLeveys, ikkunanKorkeus, tietopalkinLeveys;
+
+	private Image valimuisti;
+	private boolean valimuistiAjantasalla;
 	
 	/**
 	* Hoitaa pelin piirtamisen.
@@ -42,6 +46,8 @@ public class Piirturi {
 	*/
 	public Piirturi(Peli peli, int ikkunanLeveys, int ikkunanKorkeus, Ulottuvuudet ulottuvuudet, Palikkasetti palikkasetti, Varit varit, Pistelaskija pistelaskija, Ennatyslistaaja ennatyslistaaja) {
 		this.peli = peli;
+		this.valimuisti = peli.createImage(ikkunanLeveys, ikkunanKorkeus);
+		this.valimuistiAjantasalla = false;
 		
 		this.ikkunanLeveys = ikkunanLeveys;
 		this.tietopalkinLeveys = 130;
@@ -90,6 +96,11 @@ public class Piirturi {
 	public void paivita() {
 		peli.paivita();
 	}
+
+	/* Pyytää piirturia piirtämään pelinäkymän statistiikan, reunat ja pelikentän uudelleen */
+	public void nakymaaMuutettu() {
+		this.valimuistiAjantasalla = false;
+	}
 	
 	/**
 	* Piirtaa kaikki pelin komponentit.
@@ -100,15 +111,24 @@ public class Piirturi {
 	* @param palojaSisaltavienKerrostenMaara Paloja sisaltavien kerrosten maara
 	*/
 	public void piirra(Graphics g, Pala[][][] kuilu, TippuvaPalikka tippuvaPalikka, int palojaSisaltavienKerrostenMaara) {
-		this.reunapiirturi.piirra(g);
-		this.palikkapiirturi.piirra(g, kuilu);
+
+		if (!valimuistiAjantasalla) {
+			Graphics valimuisti_g = valimuisti.getGraphics();
+			//TODO: tyhjennä välimuisti jotenkin?
+
+			this.reunapiirturi.piirra(valimuisti_g);
+			this.palikkapiirturi.piirra(valimuisti_g, kuilu);
+			
+			if (peli.piirretaankoStatistiikka()) {
+				this.statistiikkapiirturi.piirra(valimuisti_g, ikkunanLeveys, ikkunanKorkeus, palojaSisaltavienKerrostenMaara);
+			}
+			valimuistiAjantasalla = true;
+			valimuisti_g.dispose();
+		}
+		g.drawImage(valimuisti, 0,0, null);
 		
 		if (!peli.onkoTauolla()) {
 			this.tippuvaPalikkapiirturi.piirra(g, tippuvaPalikka);
-		}
-		
-		if (peli.piirretaankoStatistiikka()) {
-			this.statistiikkapiirturi.piirra(g, ikkunanLeveys, ikkunanKorkeus, palojaSisaltavienKerrostenMaara);
 		}
 	}
 	

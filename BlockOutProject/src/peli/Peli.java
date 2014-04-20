@@ -313,6 +313,7 @@ public class Peli extends Ikkuna {
 	*/
 	public void haeUusiPalikkaKenttaan() {
 		haeTippuvaPalikka();
+		this.piirturi.nakymaaMuutettu();
 		paivita();
 		
 		ajastaSeuraavaTiputus();
@@ -390,5 +391,16 @@ public class Peli extends Ikkuna {
 				this.piirturi.piirraGameOver(g, this, paaseekoListalle);
 			}
 		}
+	}
+
+	/**
+	* Varmistaa, että pelinäkymä päivittyy kun kuvat latautuvat
+	* 
+	*/
+	@Override
+	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+		this.piirturi.nakymaaMuutettu();
+
+		return super.imageUpdate(img, infoflags, x, y, width, height);
 	}
 }

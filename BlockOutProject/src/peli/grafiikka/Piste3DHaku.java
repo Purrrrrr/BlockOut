@@ -64,7 +64,7 @@ public class Piste3DHaku {
 		return new Koordinaatti(xKoord, yKoord);
 	}
 	
-	private int xKoordinaatti(double x, double y, double z, int kulmaX, int kulmaY, int kulmaZ) {
+	public int xKoordinaatti(double x, double y, double z, int kulmaX, int kulmaY, int kulmaZ) {
 		//nama ruuduissa
 		double xEtaisyysKeskelta = -(kentanLeveys/2.0 - x);
 		if (kulmaX==-1) {
@@ -81,7 +81,7 @@ public class Piste3DHaku {
 		return (int) ( leveysKeskitysKorjaus + (kentanLeveys/2.0 * ruudunLeveys) + xKoordinaattiKeskelta );
 	}
 	
-	private int yKoordinaatti(double x, double y, double z, int kulmaX, int kulmaY, int kulmaZ) {
+	public int yKoordinaatti(double x, double y, double z, int kulmaX, int kulmaY, int kulmaZ) {
 		//nama ruuduissa
 		double yEtaisyysKeskelta = -(kentanKorkeus/2.0 - y);
 		if (kulmaY==-1) {
