@@ -13,14 +13,18 @@ public class Palikka {
 	private int koko;
 	private int alapisteet, ylapisteet, palojenMaara;
 
-	/** Palikan kaikki pyöräytetyt versiot hashcoden mukaan talletettuna */
-	private HashMap<Integer, Pala[][][]> pyoritetytVersiot;
-	/** Muunnos hashcodesta ja pyöräytyksestä pyöräytetyn palan hashcodeen */
-	private HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset;
-	/** Palikan palojen koordinaatit hashcoden mukaan talletettuna. Tämä on optimointi mahtumistarkistuksia varten. */
-	private HashMap<Integer, List<Koordinaatti>> pyoraytetytPalakoordinaatit;
-	/** Palikan särmäkoordinaatit hashcoden mukaan talletettuna */
-	private HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>> pyoraytetytSarmat;
+        /** Luku, joka kertoo miten p�in palikka on. 
+         * K�ytet��n indeksin� hashcode-, pala-, py�r�ytys-, palakoordinaatti-, ja s�rm�taulukoihin */
+        int suunta = 0;
+        private int[] hashcodes;
+        /** Palikan kaikki pyöräytetyt versiot suunnan mukaan talletettuna */
+        private Pala[][][][] pyoritetytVersiot;
+	/** Muunnos suunnasta ja pyöräytyksestä pyöräytetyn palan suuntaan */
+        private int[][] pyoraytyksetSuunnittain;
+	/** Palikan palojen koordinaatit suunnnittain talletettuna. Tämä on optimointi mahtumistarkistuksia varten. */
+        private List<Koordinaatti>[] pyoraytetytPalakoordinaatit;
+	/** Palikan särmäkoordinaatit suunnittain talletettuna */
+        private HashMap<Koordinaatti, ArrayList<Koordinaatti>>[] pyoraytetytSarmat;
 	
 	/** Tämänhetkinen palikka */
 	private Pala[][][] palikka;
@@ -57,8 +61,7 @@ public class Palikka {
 		}
 		
 		alustaPyoraytykset();
-		hashcode = laskeHashCode(this.palikka);
-		this.sarmat = pyoraytetytSarmat.get(hashcode);
+		this.sarmat = pyoraytetytSarmat[suunta];
 		
 	}
 	private Palikka(int koko, int alapisteet, int ylapisteet) {
@@ -81,10 +84,12 @@ public class Palikka {
 		
 		this.palikka = toinen.palikka;
 		this.pyoritetytVersiot = toinen.pyoritetytVersiot;
-		this.pyoraytykset = toinen.pyoraytykset;
+		this.pyoraytyksetSuunnittain = toinen.pyoraytyksetSuunnittain;
 		this.pyoraytetytSarmat = toinen.pyoraytetytSarmat;
 		this.sarmat = toinen.sarmat;
 		this.hashcode = toinen.hashcode;
+                this.suunta = toinen.suunta;
+                this.hashcodes = toinen.hashcodes;
 		this.pyoraytetytPalakoordinaatit = toinen.pyoraytetytPalakoordinaatit;
 	}
 	
@@ -125,27 +130,27 @@ public class Palikka {
 	}
 
 	private void alustaPyoraytykset() {
-		pyoritetytVersiot = new HashMap<Integer, Pala[][][]>();
-		pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();
-		pyoraytetytSarmat = new HashMap<Integer, HashMap<Koordinaatti, ArrayList<Koordinaatti>>>();
-	  pyoraytetytPalakoordinaatit = new HashMap<Integer, List<Koordinaatti>>();
-
+            
+                //HashMap-versiot lopullisista py�rittelytaulukoista:
+		HashMap<Integer, Pala[][][]> pyoritetytVersiotHM = new HashMap<Integer, Pala[][][]>();
+                HashMap<Integer, Integer> versionumerot = new HashMap<>();
+		HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();
 		PalikkaPyorayttaja.Pyoraytys[] pyoritykset = PalikkaPyorayttaja.Pyoraytys.values();
+                
+                int versioLaskuri = 0;
 
 		Pala[][][] juuri = palikka;
 		
 		Deque<Pala[][][]> tutkittavat = new LinkedList<Pala[][][]>();
 		tutkittavat.add(juuri);
-		
-		/*
-		deb(juuri);
-		/**/
 
 		while(!tutkittavat.isEmpty()) {
 			Pala[][][] tutkittava = tutkittavat.pop();
 
 			int tutkittavanHashcode = laskeHashCode(tutkittava);
-			pyoritetytVersiot.put(tutkittavanHashcode, tutkittava);
+			pyoritetytVersiotHM.put(tutkittavanHashcode, tutkittava);
+                        versionumerot.put(tutkittavanHashcode, versioLaskuri);
+                        versioLaskuri++;
 
 			//System.out.println("Tutkittava: "+tutkittavanHashcode);
 			HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> palikanPyoraytykset;
@@ -157,33 +162,49 @@ public class Palikka {
 				Pala[][][] uusi = pyorayttaja.pyorita(p);
 				int pyoraytetynHashcode = laskeHashCode(uusi);
 
-				if (!pyoritetytVersiot.containsKey(pyoraytetynHashcode)) {
-					pyoritetytVersiot.put(pyoraytetynHashcode, uusi);
+				if (!pyoritetytVersiotHM.containsKey(pyoraytetynHashcode)) {
+					pyoritetytVersiotHM.put(pyoraytetynHashcode, uusi);
 					tutkittavat.add(uusi);
 				}
 				palikanPyoraytykset.put(p, pyoraytetynHashcode);
 
 			}
 		}
-		for (Map.Entry<Integer, Pala[][][]> entry : pyoritetytVersiot.entrySet()) {
-			Integer hc = entry.getKey();
-			Pala[][][] pyoritettypalikka = entry.getValue();
-
-			Kulmahaku kulmahaku = new Kulmahaku(pyoritettypalikka);
-			pyoraytetytSarmat.put(hc, kulmahaku.haeSarmat());
-			
-			List<Koordinaatti> palat = new ArrayList<Koordinaatti>();
-			for (int k=0; k<pyoritettypalikka[0][0].length; k++) {
-				for (int j=0; j<pyoritettypalikka[0].length; j++) {
-					for (int i=0; i<pyoritettypalikka.length; i++) {
-						if (pyoritettypalikka[i][j][k] == Pala.TIPPUVA) {
-							palat.add(new Koordinaatti(i,j,k));
-						}
-					}
-				}
-			}
-			pyoraytetytPalakoordinaatit.put(hc, palat);
-		}
+                
+                pyoritetytVersiot = new Pala[pyoritetytVersiotHM.size()][][][];
+                hashcodes = new int[pyoritetytVersiot.length];
+                pyoraytyksetSuunnittain = new int[pyoritetytVersiot.length][pyoritykset.length];
+		pyoraytetytSarmat = new HashMap[pyoritetytVersiot.length];
+                pyoraytetytPalakoordinaatit = new List[pyoritetytVersiot.length];
+                
+                for (Integer hc : pyoritetytVersiotHM.keySet()) {
+                    Pala[][][] versio = pyoritetytVersiotHM.get(hc);
+                    int versioNumero = versionumerot.get(hc);
+                    pyoritetytVersiot[versioNumero] = versio;
+                    hashcodes[versioNumero] = hc;
+                    
+                    HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> versionPyoraytykset = pyoraytykset.get(hc);
+                    for(PalikkaPyorayttaja.Pyoraytys p :  pyoritykset) {
+                        Integer pyoraytyksenHc = versionPyoraytykset.get(p);
+                        pyoraytyksetSuunnittain[versioNumero][p.ordinal()] = versionumerot.get(pyoraytyksenHc);
+                    }
+                    
+                    Kulmahaku kulmahaku = new Kulmahaku(versio);
+                    pyoraytetytSarmat[versioNumero] = kulmahaku.haeSarmat();
+                    
+                    List<Koordinaatti> palat = new ArrayList<Koordinaatti>();
+                    for (int k = 0; k < versio[0][0].length; k++) {
+                        for (int j = 0; j < versio[0].length; j++) {
+                            for (int i = 0; i < versio.length; i++) {
+                                if (versio[i][j][k] == Pala.TIPPUVA) {
+                                    palat.add(new Koordinaatti(i, j, k));
+                                }
+                            }
+                        }
+                    }
+                    pyoraytetytPalakoordinaatit[versioNumero] = palat;
+                }
+                
 	}
 
 	private int laskeHashCode(Pala[][][] laskettava) {
@@ -214,7 +235,7 @@ public class Palikka {
 	}
 	
 	public List<Koordinaatti> annaPalaKoordinaatit() {
-		return this.pyoraytetytPalakoordinaatit.get(hashcode);
+		return this.pyoraytetytPalakoordinaatit[suunta];
 	}
 
 	/**
@@ -335,8 +356,8 @@ public class Palikka {
 			return;
 		}
 
-    HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hashcode);
-		hashcode = p.get(pyoraytys);
+                suunta = pyoraytyksetSuunnittain[suunta][pyoraytys.ordinal()];
+                hashcode = hashcodes[suunta];
 		
 		/*
 		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
@@ -344,8 +365,8 @@ public class Palikka {
 		verrokki = pyorayttaja.pyoritaSuuntaEsille(verrokki, x, y);
 		/**/
 
-		this.sarmat = pyoraytetytSarmat.get(hashcode);
-		this.palikka = pyoritetytVersiot.get(hashcode);
+		this.sarmat = pyoraytetytSarmat[suunta];
+		this.palikka = pyoritetytVersiot[suunta];
 		
 		/*
 		if (!cmp(palikka, verrokki)) {
@@ -369,9 +390,9 @@ public class Palikka {
 		} else {
 			pyoraytys = PalikkaPyorayttaja.Pyoraytys.VASTAPAIVA;
 		}
-
-    HashMap<PalikkaPyorayttaja.Pyoraytys, Integer> p = pyoraytykset.get(hashcode);
-		hashcode = p.get(pyoraytys);
+                
+                suunta = pyoraytyksetSuunnittain[suunta][pyoraytys.ordinal()];
+                hashcode = hashcodes[suunta];
 		
 		/*
 		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
@@ -379,8 +400,8 @@ public class Palikka {
 		verrokki = pyorayttaja.pyoritaMyotapaivaan(verrokki, myotapaivaan);
 		*/
 
-		this.sarmat = pyoraytetytSarmat.get(hashcode);
-		this.palikka = pyoritetytVersiot.get(hashcode);
+		this.sarmat = pyoraytetytSarmat[suunta];
+		this.palikka = pyoritetytVersiot[suunta];
 		
 		/*
 		if (!cmp(palikka, verrokki)) {
