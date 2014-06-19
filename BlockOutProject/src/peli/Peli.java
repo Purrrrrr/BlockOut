@@ -80,7 +80,7 @@ public class Peli extends Ikkuna {
 		
 		alustaLogiikka(asetukset, ulottuvuudet);
 
-		// Lis‰t‰‰n kuuntelija, joka muuttaa asettaa piirturin, jos ikkunan kokoa muutetaan.
+		// Lis√§t√§√§n kuuntelija, joka muuttaa asettaa piirturin, jos ikkunan kokoa muutetaan.
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
 				alustaGrafiikka(asetukset, asetukset.annaUlottuvuudet());
@@ -133,7 +133,7 @@ public class Peli extends Ikkuna {
 			FloatControl gainControl = (FloatControl) tasoAani.getControl(FloatControl.Type.MASTER_GAIN);
 			gainControl.setValue(-10.0f);
 		} catch (Exception e) {
-			System.out.println("Äänitiedoston avaus ei onnistunut.");
+			System.out.println("√Ñ√§nitiedoston avaus ei onnistunut.");
 			this.aanetPaalla = false;
 		}
 	}
@@ -194,7 +194,7 @@ public class Peli extends Ikkuna {
 	}
 	
 	/**
-	* Kertoo piirret‰‰nkˆ peliin statistiikat
+	* Kertoo piirret√§√§nk√∂ peliin statistiikat
 	* 
 	* @return Aina true
 	*/
@@ -284,7 +284,7 @@ public class Peli extends Ikkuna {
 			if (aanetPaalla) {
 				try {
 					tasoAani.start();
-					System.out.println("Äänen olisi pitänyt soida.");
+					System.out.println("√Ñ√§nen olisi pit√§nyt soida.");
 				} catch (Exception e) {
 					System.out.println("Ongelma");
 					e.printStackTrace();
@@ -394,7 +394,7 @@ public class Peli extends Ikkuna {
 	}
 
 	/**
-	* Varmistaa, ett‰ pelin‰kym‰ p‰ivittyy kun kuvat latautuvat
+	* Varmistaa, ett√§ pelin√§kym√§ p√§ivittyy kun kuvat latautuvat
 	* 
 	*/
 	@Override

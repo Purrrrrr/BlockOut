@@ -120,7 +120,7 @@ public class AsetuksetPaneli extends JPanel implements KeyListener {
 				asetuksenNimi.setText( nimi.substring( 0, nimi.length()-1 ) );
 			}
 		}
-		else if (merkki.matches("\\p{ASCII}|[åäöÅÄÖßüÜ]")) {
+		else if (merkki.matches("\\p{ASCII}|[√•√§√∂√Ö√Ñ√ñ√ü√º√ú]")) {
 			asetuksenNimi.setText( nimi + merkki );
 		}
 	}
@@ -167,16 +167,16 @@ public class AsetuksetPaneli extends JPanel implements KeyListener {
 		nappainNappula.addActionListener(new NappainNappulaKuuntelija(pelinAsetukset));
 		alapaneli.add(nappainNappula);
 		
-		Nappula variNappula = new Nappula("Värit");
+		Nappula variNappula = new Nappula("V√§rit");
 		variNappula.setFocusable(false);
 		variNappula.asetaFontti(fontinNimi, 20);
 		variNappula.setEnabled(this.muokattavissa);
 		variNappula.addActionListener(new VariNappulaKuuntelija( pelinAsetukset ));
 		alapaneli.add(variNappula);
 		
-		Nappula aaniNappula = new Nappula("Äänet päällä");
+		Nappula aaniNappula = new Nappula("√Ñ√§net p√§√§ll√§");
 		if (!asetukset.annaAanet()) {
-			aaniNappula.setText("Äänet poissa");
+			aaniNappula.setText("√Ñ√§net poissa");
 		}
 		aaniNappula.setFocusable(false);
 		aaniNappula.asetaFontti(fontinNimi, 20);

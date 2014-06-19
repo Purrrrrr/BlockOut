@@ -43,7 +43,7 @@ public class Varit {
 				Color vari = new Color( hashKoodi );
 				this.varit.add(vari);
 			} catch (NumberFormatException e) {
-				System.out.println("Varin luonti ei onnistunut, koska syote ei ollut kokonaisnumero vaan " + tallennevarit[i].getClass() + "\nSyöte oli " + tallennevarit[i]);
+				System.out.println("Varin luonti ei onnistunut, koska syote ei ollut kokonaisnumero vaan " + tallennevarit[i].getClass() + "\nSy√∂te oli " + tallennevarit[i]);
 				this.varit.add(Color.GRAY);
 			} catch (Exception e) {
 				System.out.println("Varin luonti ei onnistunut hashKoodista, joka on outoa koska kaikille kokonaisluvuille tulisi olla vari");
@@ -103,7 +103,7 @@ public class Varit {
 	/**
 	* Vaihtaa tietyn kerroksen varin toiseksi.
 	*
-	* @param kerros Kerros, jonka varia halutaan vaihtaa. Kerroksien numerointi alkaa pohjalta ykkösestä.
+	* @param kerros Kerros, jonka varia halutaan vaihtaa. Kerroksien numerointi alkaa pohjalta ykk√∂sest√§.
 	* @param vari Vari, joka kerrokselle halutaan asettaa.
 	*/
 	public boolean vaihdaVari(int kerros, Color vari) {

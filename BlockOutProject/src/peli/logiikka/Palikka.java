@@ -13,8 +13,8 @@ public class Palikka {
 	private int koko;
 	private int alapisteet, ylapisteet, palojenMaara;
 
-        /** Luku, joka kertoo miten päin palikka on. 
-         * Käytetään indeksinä hashcode-, pala-, pyöräytys-, palakoordinaatti-, ja särmätaulukoihin */
+        /** Luku, joka kertoo miten p√§in palikka on. 
+         * K√§ytet√§√§n indeksin√§ hashcode-, pala-, py√§r√§ytys-, palakoordinaatti-, ja s√§rm√§taulukoihin */
         int suunta = 0;
         private int[] hashcodes;
         /** Palikan kaikki py√∂r√§ytetyt versiot suunnan mukaan talletettuna */
@@ -131,7 +131,7 @@ public class Palikka {
 
 	private void alustaPyoraytykset() {
             
-                //HashMap-versiot lopullisista pyörittelytaulukoista:
+                //HashMap-versiot lopullisista py√§rittelytaulukoista:
 		HashMap<Integer, Pala[][][]> pyoritetytVersiotHM = new HashMap<Integer, Pala[][][]>();
                 HashMap<Integer, Integer> versionumerot = new HashMap<>();
 		HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();

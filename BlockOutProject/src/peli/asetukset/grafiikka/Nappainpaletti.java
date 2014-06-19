@@ -70,23 +70,23 @@ public class Nappainpaletti extends JPanel implements KeyListener {
 	}
 	
 	private void luoSiirrotJaPyoritykset() {
-		luoPari("Siirrä ylös", "ylos", nappainsetti.annaYlosNappain());
-		luoPari("Yläpuoli esille", "ylapuoli esille", nappainsetti.annaYlapuoliEsilleNappain());
+		luoPari("Siirr√§ yl√∂s", "ylos", nappainsetti.annaYlosNappain());
+		luoPari("Yl√§puoli esille", "ylapuoli esille", nappainsetti.annaYlapuoliEsilleNappain());
 		
-		luoPari("Siirrä alas", "alas", nappainsetti.annaAlasNappain());
+		luoPari("Siirr√§ alas", "alas", nappainsetti.annaAlasNappain());
 		luoPari("Alapuoli esille", "alapuoli esille", nappainsetti.annaAlapuoliEsilleNappain());
 		
-		luoPari("Siirrä vasemmalle", "vasemmalle", nappainsetti.annaVasemmalleNappain());
+		luoPari("Siirr√§ vasemmalle", "vasemmalle", nappainsetti.annaVasemmalleNappain());
 		luoPari("Vasen puoli esille", "vasen puoli esille", nappainsetti.annaVasenPuoliEsilleNappain());
 		
-		luoPari("Siirrä oikealle", "oikealle", nappainsetti.annaOikealleNappain());
+		luoPari("Siirr√§ oikealle", "oikealle", nappainsetti.annaOikealleNappain());
 		luoPari("Oikea puoli esille", "oikea puoli esille", nappainsetti.annaOikeaPuoliEsilleNappain());
 		
 		((JPanel)this.getComponent(2)).add(new JPanel());
-		luoPari("Pyöritä myötäpäivään", "myotapaivaan", nappainsetti.annaKierraMyotapaivaanNappain());
+		luoPari("Py√∂rit√§ my√∂t√§p√§iv√§√§n", "myotapaivaan", nappainsetti.annaKierraMyotapaivaanNappain());
 		
 		((JPanel)this.getComponent(2)).add(new JPanel());
-		luoPari("Pyöritä vastapäivään", "vastapaivaan", nappainsetti.annaKierraVastapaivaanNappain());
+		luoPari("Py√∂rit√§ vastap√§iv√§√§n", "vastapaivaan", nappainsetti.annaKierraVastapaivaanNappain());
 	}
 	
 	private void luoTiputuksetJaTauko() {

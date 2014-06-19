@@ -17,13 +17,13 @@ public class AaniNappulaKuuntelija implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (nappula.getText().contains("pŠŠllŠ")) {
+		if (nappula.getText().contains("pÃ¤Ã¤llÃ¤")) {
 			asetukset.asetaAanet(false);
-			nappula.setText("€Šnet poissa");
+			nappula.setText("Ã„Ã¤net poissa");
 		}
 		else {
 			asetukset.asetaAanet(true);
-			nappula.setText("€Šnet pŠŠllŠ");
+			nappula.setText("Ã„Ã¤net pÃ¤Ã¤llÃ¤");
 		}
 	}
 }

@@ -63,7 +63,7 @@ public class Varipaletti extends JPanel implements KeyListener {
 	}
 	
 	private JLabel luoOtsikko() {
-		JLabel otsikko = new JLabel("V둹iasetukset", JLabel.CENTER);
+		JLabel otsikko = new JLabel("V채riasetukset", JLabel.CENTER);
 		otsikko.setFont(new Font(fontinNimi, Font.PLAIN, 30));
 		otsikko.setForeground(Color.WHITE);
 		return otsikko;
@@ -102,7 +102,7 @@ public class Varipaletti extends JPanel implements KeyListener {
 			variNappula.addActionListener(new MuutaVariKuuntelija(this, variNappula));
 			paneli.add(variNappula);
 			
-			Nappula lisaaNappula = new Nappula("Lis뒍");
+			Nappula lisaaNappula = new Nappula("Lis채채");
 			lisaaNappula.setFocusable(false);
 			lisaaNappula.setPreferredSize(new Dimension(50, 29));
 			lisaaNappula.addActionListener(new LisayksenKuuntelija(this, -kerros));
@@ -116,7 +116,7 @@ public class Varipaletti extends JPanel implements KeyListener {
 			
 			kerrosValikoima.add(paneli);
 			
-			//Nappula lisaaNappula = new Nappula("Lis뒍");
+			//Nappula lisaaNappula = new Nappula("Lis채채");
 			//lisaaNappula.setFocusable(false);
 			//kerrospaneli.add(lisaaNappula);
 			
@@ -317,7 +317,7 @@ public class Varipaletti extends JPanel implements KeyListener {
 		rgbPaneli.setOpaque(false);
 		this.variTalletus.add(rgbPaneli);
 		
-		Nappula valintaNappula = new Nappula("Valitse v둹i");
+		Nappula valintaNappula = new Nappula("Valitse v채ri");
 		valintaNappula.setFocusable(false);
 		valintaNappula.asetaNappulanKavennus(20);
 		valintaNappula.addActionListener(new ValinnanKuuntelija( this, vari ));

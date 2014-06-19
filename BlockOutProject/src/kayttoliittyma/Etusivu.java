@@ -58,7 +58,7 @@ public class Etusivu extends JPanel {
 		this.asetukset.setFocusable(false);
 		this.add(this.asetukset);
 		
-		this.ennatyslista = new Nappula("Ennätyslista");
+		this.ennatyslista = new Nappula("Enn√§tyslista");
 		this.ennatyslista.addActionListener( new EnnatyslistaNappulaKuuntelija(this.kayttis) );
 		this.ennatyslista.setEnabled(true);
 		this.ennatyslista.setFocusable(false);

@@ -106,7 +106,7 @@ public class Ennatyslistat {
 			String palikkasetti = ennatyslistanMaareet[3];
 			
 			if (!tallenteenMaareetSopivat(pienempiLeveys, suurempiLeveys, syvyys, palikkasetti)) {
-				System.out.println("Ennätyslistaan oli tallennettu kentän tiedot väärässä muodossa.");
+				System.out.println("Enn√§tyslistaan oli tallennettu kent√§n tiedot v√§√§r√§ss√§ muodossa.");
 				throw new Exception();
 			}
 			
@@ -160,12 +160,12 @@ public class Ennatyslistat {
 			
 			tarkistaOikeellisuusRiveittain(lukija, true);
 		} catch (IOException ioe) {
-			System.out.println("Tiedoston 'ennatyslista' avaus ei onnistunut kun yritettiin selvittää ennätyslistan oikeellisuutta.");
+			System.out.println("Tiedoston 'ennatyslista' avaus ei onnistunut kun yritettiin selvitt√§√§ enn√§tyslistan oikeellisuutta.");
 			ioe.printStackTrace();
 			
 			oikeellisuus = false;
 		} catch (PropertyVetoException pve) {
-			System.out.println("Tiedostoa 'ennatyslista' ei avattu, koska sen tarkistusrivi ei täsmännyt tiedoston muuta sisältöä.");
+			System.out.println("Tiedostoa 'ennatyslista' ei avattu, koska sen tarkistusrivi ei t√§sm√§nnyt tiedoston muuta sis√§lt√∂√§.");
 			pve.printStackTrace();
 			
 			oikeellisuus = false;
