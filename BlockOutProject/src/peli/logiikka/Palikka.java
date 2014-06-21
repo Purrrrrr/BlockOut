@@ -14,11 +14,11 @@ public class Palikka {
 	private int alapisteet, ylapisteet, palojenMaara;
 
         /** Luku, joka kertoo miten päin palikka on. 
-         * Käytetään indeksinä hashcode-, pala-, pyäräytys-, palakoordinaatti-, ja särmätaulukoihin */
+         * Käytetään indeksinä hashcode-, pala-, pyöräytys-, palakoordinaatti-, ja särmätaulukoihin */
         int suunta = 0;
         private int[] hashcodes;
         /** Palikan kaikki pyöräytetyt versiot suunnan mukaan talletettuna */
-        private Pala[][][][] pyoritetytVersiot;
+        private PalaMatriisi[] pyoritetytVersiot;
 	/** Muunnos suunnasta ja pyöräytyksestä pyöräytetyn palan suuntaan */
         private int[][] pyoraytyksetSuunnittain;
 	/** Palikan palojen koordinaatit suunnnittain talletettuna. Tämä on optimointi mahtumistarkistuksia varten. */
@@ -27,7 +27,7 @@ public class Palikka {
         private HashMap<Koordinaatti, ArrayList<Koordinaatti>>[] pyoraytetytSarmat;
 	
 	/** Tämänhetkinen palikka */
-	private Pala[][][] palikka;
+	private PalaMatriisi palikka;
 	/** Tämänhetkiset särmäkoordinaatit */
 	private HashMap<Koordinaatti, ArrayList<Koordinaatti>> sarmat;
 	int hashcode = 0;
@@ -69,8 +69,7 @@ public class Palikka {
 			koko++;
 		}
 		this.koko = koko;
-		this.palikka = new Pala[this.koko][this.koko][this.koko];
-		palikanTyhjaksiAlustus(this.palikka);
+		this.palikka = new PalaMatriisi(this.koko);
 		
 		this.alapisteet = alapisteet;
 		this.ylapisteet = ylapisteet;
@@ -102,16 +101,6 @@ public class Palikka {
 		return new Palikka(this);
 	}
 	
-	private void palikanTyhjaksiAlustus(Pala[][][] palikka) {
-		for (int i=0; i<koko; i++) {
-			for (int j=0; j<koko; j++) {
-				for (int k=0; k<koko; k++) {
-					palikka[i][j][k] = Pala.TYHJA;
-				}
-			}
-		}
-	}
-	
 	/**
 	* Lisaa palikkaan palan.
 	* 
@@ -121,33 +110,33 @@ public class Palikka {
 	* @return Tieto siita onnistuiko palikan lisaaminen vai ei
 	*/
 	private void lisaaPala(int x, int y, int z) {
-		if (this.palikka[x-1][y-1][z-1] == Pala.TIPPUVA) {
+		if (!this.palikka.onkoTyhja(x-1, y-1, z-1)) {
 			return;
 		}
 		
-		this.palikka[x-1][y-1][z-1] = Pala.TIPPUVA;
+		this.palikka.asetaKohdanTyhjyys(x-1, y-1, z-1, false);
 		this.palojenMaara++;
 	}
 
 	private void alustaPyoraytykset() {
             
-                //HashMap-versiot lopullisista pyärittelytaulukoista:
-		HashMap<Integer, Pala[][][]> pyoritetytVersiotHM = new HashMap<Integer, Pala[][][]>();
+                //HashMap-versiot lopullisista pyörittelytaulukoista:
+		HashMap<Integer, PalaMatriisi> pyoritetytVersiotHM = new HashMap<Integer, PalaMatriisi>();
                 HashMap<Integer, Integer> versionumerot = new HashMap<>();
 		HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>> pyoraytykset = new HashMap<Integer, HashMap<PalikkaPyorayttaja.Pyoraytys, Integer>>();
 		PalikkaPyorayttaja.Pyoraytys[] pyoritykset = PalikkaPyorayttaja.Pyoraytys.values();
                 
                 int versioLaskuri = 0;
 
-		Pala[][][] juuri = palikka;
+		PalaMatriisi juuri = palikka;
 		
-		Deque<Pala[][][]> tutkittavat = new LinkedList<Pala[][][]>();
+		Deque<PalaMatriisi> tutkittavat = new LinkedList<PalaMatriisi>();
 		tutkittavat.add(juuri);
 
 		while(!tutkittavat.isEmpty()) {
-			Pala[][][] tutkittava = tutkittavat.pop();
+			PalaMatriisi tutkittava = tutkittavat.pop();
 
-			int tutkittavanHashcode = laskeHashCode(tutkittava);
+			int tutkittavanHashcode = tutkittava.hashCode();
 			pyoritetytVersiotHM.put(tutkittavanHashcode, tutkittava);
                         versionumerot.put(tutkittavanHashcode, versioLaskuri);
                         versioLaskuri++;
@@ -159,8 +148,8 @@ public class Palikka {
 
 			for(PalikkaPyorayttaja.Pyoraytys p :  pyoritykset) {
 				PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja(tutkittava);
-				Pala[][][] uusi = pyorayttaja.pyorita(p);
-				int pyoraytetynHashcode = laskeHashCode(uusi);
+				PalaMatriisi uusi = pyorayttaja.pyorita(p);
+				int pyoraytetynHashcode = uusi.hashCode();
 
 				if (!pyoritetytVersiotHM.containsKey(pyoraytetynHashcode)) {
 					pyoritetytVersiotHM.put(pyoraytetynHashcode, uusi);
@@ -171,14 +160,14 @@ public class Palikka {
 			}
 		}
                 
-                pyoritetytVersiot = new Pala[pyoritetytVersiotHM.size()][][][];
+                pyoritetytVersiot = new PalaMatriisi[pyoritetytVersiotHM.size()];
                 hashcodes = new int[pyoritetytVersiot.length];
                 pyoraytyksetSuunnittain = new int[pyoritetytVersiot.length][pyoritykset.length];
 		pyoraytetytSarmat = new HashMap[pyoritetytVersiot.length];
                 pyoraytetytPalakoordinaatit = new List[pyoritetytVersiot.length];
                 
                 for (Integer hc : pyoritetytVersiotHM.keySet()) {
-                    Pala[][][] versio = pyoritetytVersiotHM.get(hc);
+                    PalaMatriisi versio = pyoritetytVersiotHM.get(hc);
                     int versioNumero = versionumerot.get(hc);
                     pyoritetytVersiot[versioNumero] = versio;
                     hashcodes[versioNumero] = hc;
@@ -192,11 +181,11 @@ public class Palikka {
                     Kulmahaku kulmahaku = new Kulmahaku(versio);
                     pyoraytetytSarmat[versioNumero] = kulmahaku.haeSarmat();
                     
-                    List<Koordinaatti> palat = new ArrayList<Koordinaatti>();
-                    for (int k = 0; k < versio[0][0].length; k++) {
-                        for (int j = 0; j < versio[0].length; j++) {
-                            for (int i = 0; i < versio.length; i++) {
-                                if (versio[i][j][k] == Pala.TIPPUVA) {
+                    List<Koordinaatti> palat = new ArrayList<>();
+                    for (int k = 0; k < versio.annaSyvyys(); k++) {
+                        for (int j = 0; j < versio.annaKorkeus(); j++) {
+                            for (int i = 0; i < versio.annaLeveys(); i++) {
+                                if (!versio.onkoTyhja(i, j, k)) {
                                     palat.add(new Koordinaatti(i, j, k));
                                 }
                             }
@@ -207,36 +196,14 @@ public class Palikka {
                 
 	}
 
-	private int laskeHashCode(Pala[][][] laskettava) {
-		int code = 0;
-		int exp = 1;
 
-		for (int k=0; k<laskettava[0][0].length; k++) {
-			for (int j=0; j<laskettava[0].length; j++) {
-				for (int i=0; i<laskettava.length; i++) {
-					if (laskettava[i][j][k] == Pala.TIPPUVA) {
-						int subcode = i<<8 + j<<4 + k;
-						code += exp * subcode;
-					}
-					exp *= 31;
-				}
-			}
-		}
-		return code;
-	}
-	
-	/**
-	* Antaa Palikan taulukon.
-	* 
-	* @return Palikka taulukkomuodossa
-	*/
-	public Pala[][][] annaPalikka() {
-		return this.palikka;
-	}
 	
 	public List<Koordinaatti> annaPalaKoordinaatit() {
 		return this.pyoraytetytPalakoordinaatit[suunta];
 	}
+  public PalaMatriisi annaPalat() {
+    return palikka;
+  }
 
 	/**
 	* Antaa palikan keskipisteen koordinaatin. Keskipisteen koordinaatti on kaikista suunnista samassa kohdassa.
@@ -284,7 +251,7 @@ public class Palikka {
 			for (int j = jAlku; j <= jLoppu; j++) {
 				for (int k = kAlku; k <= kLoppu; k++) {
 					
-					if (palikka[i][j][k] == Pala.TIPPUVA) {
+					if (!palikka.onkoTyhja(i, j, k)) {
 						return true;
 					}
 					
@@ -361,7 +328,7 @@ public class Palikka {
 		
 		/*
 		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
-		Pala[][][] verrokki = new Pala[koko][koko][koko];
+		PalaMatriisi verrokki = new Pala[koko][koko][koko];
 		verrokki = pyorayttaja.pyoritaSuuntaEsille(verrokki, x, y);
 		/**/
 
@@ -396,7 +363,7 @@ public class Palikka {
 		
 		/*
 		PalikkaPyorayttaja pyorayttaja = new PalikkaPyorayttaja( this.palikka );
-		Pala[][][] verrokki = new Pala[koko][koko][koko];
+		PalaMatriisi verrokki = new Pala[koko][koko][koko];
 		verrokki = pyorayttaja.pyoritaMyotapaivaan(verrokki, myotapaivaan);
 		*/
 
@@ -413,9 +380,9 @@ public class Palikka {
 	}
 	
 	/*
-	private boolean cmp(Pala[][][] a, Pala[][][] b) {
-		Pala[][][] palikka = a;
-		Pala[][][] palikka2 = b;
+	private boolean cmp(PalaMatriisi a, PalaMatriisi b) {
+		PalaMatriisi palikka = a;
+		PalaMatriisi palikka2 = b;
 		
 		if (palikka.length != palikka2.length) return false;
 		if (palikka[0].length != palikka2[0].length) return false;
@@ -432,7 +399,7 @@ public class Palikka {
 		}
 		return true;
 	}
-	private void deb(Pala[][][] palikka) {
+	private void deb(PalaMatriisi palikka) {
 		System.out.println("Palikka!");
 
 		for (int i=0; i<koko; i++) {
@@ -452,8 +419,19 @@ public class Palikka {
 	}
 	*/
 
+  @Override
 	public int hashCode() {
 		return hashcode;
+	}
+
+  @Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Palikka)) return false;
+		
+		return this.equals((Palikka)other);
+	}
+	public boolean equals(Palikka that) {
+		return this.palikka.equals(that.palikka);
 	}
 
 }

@@ -82,42 +82,6 @@ public class KenttaTest {
 	}
 	
 	/**
-	 * Mahtuuko pala tyhjaan kenttaan.
-	 */
-	public void mahtuukoPalaTyhjaanKenttaan() {
-		assertTrue("Palikan olisi pitanyt mahtua tyhjaan kenttaan.", kentta.mahtuukoPalaKenttaan(1, 1, 7));
-	}
-	
-	/**
-	 * Mahtuuko pala kenttaan, jossa on eri kohdassa yksi pala.
-	 */
-	public void mahtuukoPalaMelkeinTyhjaanKenttaanVapaallePaikalle() {
-		Palikka p = new Palikka(0, 0);
-		p.lisaaPala(3, 3, 3);
-		
-		try {
-			kentta.jahmetaPalikka(p, 3, 3, 6, 0);
-		} catch (Exception e) {}
-		
-		assertTrue("Palan olisi pitanyt mahtua kenttaan vaikka siella oli jo yksi pala.", kentta.mahtuukoPalaKenttaan(3, 3, 5));
-	}
-	
-	/**
-	 * Eihan pala mahdu kenttaan jo jahmetetyn palan paikalle.
-	 */
-	@Test
-	public void eihanPalaMahduToisenPalanPaikalle() {
-		Palikka p = new Palikka(0, 0);
-		p.lisaaPala(3, 3, 3);
-		
-		try {
-			kentta.jahmetaPalikka(p, 3, 3, 6, 0);
-		} catch (Exception e) {}
-		
-		assertFalse("Palan olisi pitanyt mahtua kenttaan vaikka siella oli jo yksi pala.", kentta.mahtuukoPalaKenttaan(3, 3, 6));
-	}
-	
-	/**
 	 * Aluksi luotu kentta on tyhja, joten varitettavia kerroksia on nolla.
 	 */
 	@Test

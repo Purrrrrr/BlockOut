@@ -4,7 +4,7 @@ import peli.Peli;
 import peli.asetukset.logiikka.Ulottuvuudet;
 import peli.asetukset.logiikka.Varit;
 import peli.ennatyslista.Ennatyslistaaja;
-import peli.logiikka.Pala;
+import peli.logiikka.Kentta;
 import peli.logiikka.Palikkasetti;
 import peli.logiikka.Pistelaskija;
 import peli.logiikka.TippuvaPalikka;
@@ -54,7 +54,6 @@ public class Piirturi {
 		this.ikkunanKorkeus = ikkunanKorkeus;
 		
 		luoPiste3DHaku(ulottuvuudet);
-		
 		luoSisaisetPiirturit(varit, ulottuvuudet, pistelaskija, ennatyslistaaja);
 	}
 	
@@ -110,7 +109,7 @@ public class Piirturi {
 	* @param tippuvaPalikka Tippuva palikka
 	* @param palojaSisaltavienKerrostenMaara Paloja sisaltavien kerrosten maara
 	*/
-	public void piirra(Graphics g, Pala[][][] kuilu, TippuvaPalikka tippuvaPalikka, int palojaSisaltavienKerrostenMaara) {
+	public void piirra(Graphics g, Kentta kuilu, TippuvaPalikka tippuvaPalikka, int palojaSisaltavienKerrostenMaara) {
 
 		if (!valimuistiAjantasalla) {
 			Graphics valimuisti_g = valimuisti.getGraphics();

@@ -276,24 +276,7 @@ public class PalikkaKentalla {
 	  if (that.x != this.x) return false;
 		if (that.z != this.z) return false;
 
-		Pala[][][] palikka = this.palikka.annaPalikka();
-		Pala[][][] palikka2 = that.palikka.annaPalikka();
-		
-		if (palikka.length != palikka2.length) return false;
-		if (palikka[0].length != palikka2[0].length) return false;
-		if (palikka[0][0].length != palikka2[0][0].length) return false;
-
-		for (int k=0; k<palikka[0][0].length; k++) {
-			for (int j=0; j<palikka[0].length; j++) {
-				for (int i=0; i<palikka.length; i++) {
-					if (palikka[i][j][k] != palikka2[i][j][k]) {
-						return false;
-					}
-				}
-			}
-		}
-
-		return true;
+		return this.palikka.equals(that.palikka);
 		/**/
 	}
 

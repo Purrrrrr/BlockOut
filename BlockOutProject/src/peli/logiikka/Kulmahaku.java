@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Kulmahaku {
-	private Pala[][][] palikka;
+	private PalaMatriisi palikka;
 	private HashMap<Koordinaatti, ArrayList<Koordinaatti>> sarmat;
 	private Koordinaatti viimeisinAlkupiste;
 	
@@ -15,7 +15,7 @@ public class Kulmahaku {
 	* 
 	* @param palikka Palikka, jolle kulmat ja sarmat halutaan etsia.
 	*/
-	public Kulmahaku(Pala[][][] palikka) {
+	public Kulmahaku(PalaMatriisi palikka) {
 		this.palikka = palikka;
 		this.sarmat = new HashMap<Koordinaatti, ArrayList<Koordinaatti>>();
 	}
@@ -34,8 +34,8 @@ public class Kulmahaku {
 	}
 	
 	private void haeXSuuntaisetSarmat() {
-		for (int k=-1; k<palikka[0][0].length; k++) {
-			for (int j=-1; j<palikka[0].length; j++) {
+		for (int k=-1; k<palikka.annaSyvyys(); k++) {
+			for (int j=-1; j<palikka.annaKorkeus(); j++) {
 				
 				haeXViivanSarmat(k, j);
 				
@@ -47,7 +47,7 @@ public class Kulmahaku {
 		viimeisinAlkupiste = null;
 		String edellinenNelio = "0000";
 		
-		for (int i=0; i<=palikka.length; i++) {
+		for (int i=0; i<=palikka.annaSyvyys(); i++) {
 			String nelio = nelionSisalto(i, j, k, 1, 2, 2);
 			
 			if (onkoTahko(nelio)) {
@@ -63,8 +63,8 @@ public class Kulmahaku {
 	}
 	
 	private void haeYSuuntaisetSarmat() {
-		for (int k=-1; k<palikka[0][0].length; k++) {
-			for (int i=-1; i<palikka.length; i++) {
+		for (int k=-1; k<palikka.annaSyvyys(); k++) {
+			for (int i=-1; i<palikka.annaLeveys(); i++) {
 				
 				haeYViivanSarmat(k, i);
 				
@@ -76,7 +76,7 @@ public class Kulmahaku {
 		viimeisinAlkupiste = null;
 		String edellinenNelio = "0000";
 		
-		for (int j=0; j<=palikka[0].length; j++) {
+		for (int j=0; j<=palikka.annaKorkeus(); j++) {
 			String nelio = nelionSisalto(i, j, k, 2, 1, 2);
 			
 			if (onkoTahko(nelio)) {
@@ -92,8 +92,8 @@ public class Kulmahaku {
 	}
 	
 	private void haeZSuuntaisetSarmat() {
-		for (int j=-1; j<palikka[0].length; j++) {
-			for (int i=-1; i<palikka.length; i++) {
+		for (int j=-1; j<palikka.annaKorkeus(); j++) {
+			for (int i=-1; i<palikka.annaLeveys(); i++) {
 				
 				haeZViivanSarmat(j, i);
 				
@@ -105,7 +105,7 @@ public class Kulmahaku {
 		viimeisinAlkupiste = null;
 		String edellinenNelio = "0000";
 		
-		for (int k=0; k<=palikka[0][0].length; k++) {
+		for (int k=0; k<=palikka.annaSyvyys(); k++) {
 			String nelio = nelionSisalto(i, j, k, 2, 2, 1);
 			
 			if (onkoTahko(nelio)) {
@@ -146,11 +146,11 @@ public class Kulmahaku {
 	}
 	
 	private boolean onkoRuudussaTippuva(int i, int j, int k) {
-		if (i<0 || i>palikka.length-1 || j<0 || j>palikka[0].length-1 || k<0 || k>palikka[0][0].length-1) {
+		if (i<0 || i>palikka.annaLeveys()-1 || j<0 || j>palikka.annaKorkeus()-1 || k<0 || k>palikka.annaSyvyys()-1) {
 			return false;
 		}
 		
-		if (palikka[i][j][k] == Pala.TIPPUVA) {
+		if (!palikka.onkoTyhja(i, j, k)) {
 			return true;
 		}
 		return false;

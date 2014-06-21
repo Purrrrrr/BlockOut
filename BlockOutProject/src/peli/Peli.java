@@ -384,7 +384,7 @@ public class Peli extends Ikkuna {
 		super.paintComponent(g);
 		
 		if (this.piirturi != null) {
-			this.piirturi.piirra(g, kentta.annaKentta(), tippuvaPalikka, kentta.annaPalojaSisaltavienKerrostenMaara() );
+			this.piirturi.piirra(g, kentta, tippuvaPalikka, kentta.annaPalojaSisaltavienKerrostenMaara() );
 			
 			if (gameOver) {
 				boolean paaseekoListalle = ennatyslistaaja.paaseekoListalle( pistelaskija.annaPisteet(), kentta.annaLeveys(), kentta.annaKorkeus(), kentta.annaSyvyys(), this.palikkasetti );

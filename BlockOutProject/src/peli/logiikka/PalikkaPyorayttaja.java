@@ -1,7 +1,7 @@
 package peli.logiikka;
 
 public class PalikkaPyorayttaja {
-	private Pala[][][] palikka;
+	private PalaMatriisi palikka;
 	private int koko;
 
 	public enum Pyoraytys {
@@ -18,13 +18,13 @@ public class PalikkaPyorayttaja {
 	* 
 	* @param palikka Pyoraytettava palikka
 	*/
-	public PalikkaPyorayttaja(Pala[][][] palikka) {
+	public PalikkaPyorayttaja(PalaMatriisi palikka) {
 		this.palikka = palikka;
-		this.koko = palikka.length; //kaikkiin suuntiin saman kokoinen
+		this.koko = palikka.annaSyvyys(); //kaikkiin suuntiin saman kokoinen
 	}
 	
-	public Pala[][][] pyorita(Pyoraytys suunta) {
-		Pala[][][] uusi = new Pala[this.koko][this.koko][this.koko];
+	public PalaMatriisi pyorita(Pyoraytys suunta) {
+		PalaMatriisi uusi = new PalaMatriisi(koko);
 
 		switch(suunta) {
 			case MYOTAPAIVA:
@@ -52,7 +52,7 @@ public class PalikkaPyorayttaja {
 	* 
 	* @return Luotu uusi 3D-taulukko
 	*/
-	public Pala[][][] pyoritaSuuntaEsille(Pala[][][] uusi, int x, int y) {
+	public PalaMatriisi pyoritaSuuntaEsille(PalaMatriisi uusi, int x, int y) {
 		if (y == 1) {
 			return pyoritaAlapuoliEsille(uusi);
 		}
@@ -70,13 +70,13 @@ public class PalikkaPyorayttaja {
 		return this.palikka;
 	}
 	
-	private Pala[][][] pyoritaYlapuoliEsille(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaYlapuoliEsille(PalaMatriisi uusi) {
 		//System.out.println("alapuoli");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[i][koko-1-k][j];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(i,koko-1-k,j));
 				}
 			}
 			
@@ -85,13 +85,13 @@ public class PalikkaPyorayttaja {
 		return uusi;
 	}
 	
-	private Pala[][][] pyoritaAlapuoliEsille(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaAlapuoliEsille(PalaMatriisi uusi) {
 		//System.out.println("ylapuoli");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[i][k][koko-1-j];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(i,k,koko-1-j));
 				}
 			}
 			
@@ -100,13 +100,13 @@ public class PalikkaPyorayttaja {
 		return uusi;
 	}
 	
-	private Pala[][][] pyoritaOikeaPuoliEsille(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaOikeaPuoliEsille(PalaMatriisi uusi) {
 		//System.out.println("vasen puoli");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[koko-1-k][j][i];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(koko-1-k,j,i));
 				}
 			}
 			
@@ -115,13 +115,13 @@ public class PalikkaPyorayttaja {
 		return uusi;
 	}
 	
-	private Pala[][][] pyoritaVasenPuoliEsille(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaVasenPuoliEsille(PalaMatriisi uusi) {
 		//System.out.println("oikea puoli");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[k][j][koko-1-i];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(k,j,koko-1-i));
 				}
 			}
 			
@@ -138,7 +138,7 @@ public class PalikkaPyorayttaja {
 	* 
 	* @return Luotu uusi 3D-taulukko
 	*/
-	public Pala[][][] pyoritaMyotapaivaan(Pala[][][] uusi, boolean myotapaivaan) {
+	public PalaMatriisi pyoritaMyotapaivaan(PalaMatriisi uusi, boolean myotapaivaan) {
 		if (myotapaivaan) {
 			return pyoritaMyotapaivaan(uusi);
 		}
@@ -147,13 +147,13 @@ public class PalikkaPyorayttaja {
 		}
 	}
 	
-	private Pala[][][] pyoritaVastapaivaan(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaVastapaivaan(PalaMatriisi uusi) {
 		//System.out.println("myotapaivaan");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[koko-1-j][i][k];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(koko-1-j,i,k));
 				}
 			}
 			
@@ -162,13 +162,13 @@ public class PalikkaPyorayttaja {
 		return uusi;
 	}
 	
-	private Pala[][][] pyoritaMyotapaivaan(Pala[][][] uusi) {
+	private PalaMatriisi pyoritaMyotapaivaan(PalaMatriisi uusi) {
 		//System.out.println("vastapaivaan");
 		for (int k=0; k<koko; k++) {
 			
 			for (int i=0; i<koko; i++) {
 				for (int j=0; j<koko; j++) {
-					uusi[i][j][k] = palikka[j][koko-1-i][k];
+					uusi.asetaKohdanTyhjyys(i,j,k,palikka.onkoTyhja(j,koko-1-i,k));
 				}
 			}
 			

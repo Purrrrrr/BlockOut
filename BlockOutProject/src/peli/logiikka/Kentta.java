@@ -48,15 +48,6 @@ public class Kentta {
 	}
 	
 	/**
-	* Antaa kolmiulotteisen kentan.
-	* 
-	* @return Kolmiulotteinen Pala-taulukko
-	*/
-	public Pala[][][] annaKentta() {
-		return this.kentta;
-	}
-	
-	/**
 	* Antaa kentan leveyden
 	* 
 	* @return Leveys ruuduissa
@@ -89,10 +80,14 @@ public class Kentta {
 	* @return Tieto siita oliko tyhja vai ei
 	*/
 	public boolean onkoKentanEdustaVapaana() {
-		if (kentta[(leveys+2)/2][(korkeus+2)/2][0] == Pala.TYHJA) {
-			return true;
-		}
-		return false;
+		return kentta[(leveys+2)/2][(korkeus+2)/2][0] == Pala.TYHJA;
+	}
+
+	/**
+	 * Selvittää onko kentän tietty kohta varattu
+	 */
+	public boolean onkoKoordinaattiVarattu(int x, int y, int z) {
+		return kentta[x][y][z] != Pala.TYHJA;
 	}
 	
 	/**
@@ -116,20 +111,42 @@ public class Kentta {
 	}
 	
 	private void muutaPalatTippuvistaVaratuiksi(Palikka annettuPalikka, int x, int y, int z) {
-		Pala[][][] palikka = annettuPalikka.annaPalikka();
-		int keskipiste = (palikka.length-1)/2;
+		PalaMatriisi palikka = annettuPalikka.annaPalat();
+		int keskipiste = (palikka.annaLeveys()-1)/2;
 		
-		for (int k=0; k<palikka[0][0].length; k++) {
-			for (int j=0; j<palikka[0].length; j++) {
-				for (int i=0; i<palikka.length; i++) {
+		for (int k=0; k<palikka.annaSyvyys(); k++) {
+			for (int j=0; j<palikka.annaKorkeus(); j++) {
+				for (int i=0; i<palikka.annaLeveys(); i++) {
 					
-					if (palikka[i][j][k]==Pala.TIPPUVA && k-keskipiste+z>=0) {
+					if (!palikka.onkoTyhja(i, j, k) && k-keskipiste+z>=0) {
 						kentta[ i-keskipiste+x ][ j-keskipiste+y ][ k-keskipiste+z ] = Pala.VARATTU;
 					}
 					
 				}
 			}
 		}
+    
+    
+	}
+  
+  public String toString() {
+		String result = "Palikka!";
+
+		for (int i=0; i<kentta.length; i++) {
+			for (int k=0; k<kentta[0][0].length; k++) {
+				for (int j=0; j<kentta[0].length; j++) {
+					if (kentta[i][j][k] != Pala.TYHJA) {
+            result += "*";
+					} else {
+						result += " ";
+					}
+				}
+				
+        result += "|";
+			}
+      result += "\n";
+		}
+    return result;
 	}
 	
 	private int tuhoaValmiitKerrokset() {
@@ -188,32 +205,6 @@ public class Kentta {
 		return true;
 	}
 	
-	/**
-	* Selvittaako mahtuuko yksittainen pala kenttaan. Jos pala on kuilun sivujen ulkopuolella palauttaa false. Jos pala on kuilun edessa, mutta sivujen sisapuolella palauttaa true.
-	* 
-	* @param i Palan x-koordinaatti
-	* @param j Palan y-koordinaatti
-	* @param k Palan z-koordinaatti
-	* @return Tieto siita mahtuuko pala kenttaan vai ei
-	*/
-	public boolean mahtuukoPalaKenttaan(int i, int j, int k) {
-		try {
-			if( kentta[i][j][k] == Pala.TYHJA ) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		
-		} catch (IndexOutOfBoundsException e) {
-			//kentan reunojen sisalla olevat palaset
-			if (i<1 || j<1 || i>this.leveys || j>this.korkeus) {
-				return false;
-			}
-			//kentan edessa olevat palaset
-			return true;
-		}
-	}
 	/**
 	* Selvittaako mahtuuko lista paloja kenttaan. Jos pala on kuilun sivujen ulkopuolella palauttaa false. Jos pala on kuilun edessa, mutta sivujen sisapuolella palauttaa true.
 	* 

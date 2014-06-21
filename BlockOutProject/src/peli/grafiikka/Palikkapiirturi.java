@@ -1,7 +1,7 @@
 package peli.grafiikka;
 
 import peli.Koordinaatti;
-import peli.logiikka.Pala;
+import peli.logiikka.Kentta;
 
 import java.util.ArrayList;
 import java.awt.Color;
@@ -39,13 +39,19 @@ public class Palikkapiirturi{
 	* @param g Graphics
 	* @param kentta Piirrettava kentta
 	*/
-	public void piirra(Graphics g, Pala[][][] kentta) {
+	public void piirra(Graphics g, Kentta kentta) {
+		int leveys = kentta.annaLeveys()+2;
+		int korkeus = kentta.annaKorkeus()+2;
+		int syvyys = kentta.annaSyvyys();
+		
+		/*
 		int leveys = kentta.length;
 		int korkeus = kentta[0].length;
 		int syvyys = kentta[0][0].length;
+		*/
 		
-		int kerros = 1;
-		for (int k = syvyys-2; k >= 0; k--) {
+		int kerros = 0;
+		for (int k = syvyys-1; k >= 0; k--) {
 			valitseVariKerrokselle(kerros);
 			
 			//TODO joskus: olisi ollut fiksumpi, etta taulukosta voisi ottaa syvyyden kentta[k], mutta nyt tuo antaisi pystyslicen tietylta leveydelta
@@ -57,15 +63,13 @@ public class Palikkapiirturi{
 	}
 	
 	private void valitseVariKerrokselle(int kerros) {
-		while (kerros > varit.size()) {
-			kerros = kerros - varit.size();
-		}
+    kerros = kerros % varit.size();
 		
-		kerroksenVari = varit.get(kerros-1);
+		kerroksenVari = varit.get(kerros);
 	}
 	
 	//jarjestys niin, ettei mitaan piirreta paallemman paalle
-	private void piirraKerroksenPalojenSivutahkotLaidoistaKeskelle( Graphics g, int leveys, int korkeus, int k, Pala[][][] kentta) {
+	private void piirraKerroksenPalojenSivutahkotLaidoistaKeskelle( Graphics g, int leveys, int korkeus, int k, Kentta kentta) {
 		for (int j = 1; j < korkeus/2-0.5; j++) {
 			piirraKerroksenPalojenSivutahkotSivulaidoistaKeskelle( g, leveys, j, k, kentta );
 		}
@@ -75,24 +79,24 @@ public class Palikkapiirturi{
 	}
 	
 	//jarjestys niin, ettei mitaan piirreta paallemman paalle
-	private void piirraKerroksenPalojenSivutahkotSivulaidoistaKeskelle( Graphics g, int leveys, int j, int k, Pala[][][] kentta ) {
+	private void piirraKerroksenPalojenSivutahkotSivulaidoistaKeskelle( Graphics g, int leveys, int j, int k, Kentta kentta ) {
 		for (int i = leveys-2; i > leveys/2; i--) {
-			if (kentta[i][j][k] == Pala.VARATTU) {
-				piirraSivutahkot(g, i, j, k, leveys, kentta[0].length);
+			if (kentta.onkoKoordinaattiVarattu(i,j,k)) {
+				piirraSivutahkot(g, i, j, k, leveys, kentta.annaKorkeus());
 			}
 		}
 		for (int i = 1; i <= leveys/2; i++) {
-			if (kentta[i][j][k] == Pala.VARATTU) {
-				piirraSivutahkot(g, i, j, k, leveys, kentta[0].length);
+			if (kentta.onkoKoordinaattiVarattu(i,j,k)) {
+				piirraSivutahkot(g, i, j, k, leveys, kentta.annaKorkeus());
 			}
 		}
 	}
 	
-	private void piirraKerroksenPalojenPaallitahkot(Graphics g, int leveys, int korkeus, int k, Pala[][][] kentta) {
+	private void piirraKerroksenPalojenPaallitahkot(Graphics g, int leveys, int korkeus, int k, Kentta kentta) {
 		for (int j = 1; j < korkeus-1; j++) {
 			for (int i = 1; i < leveys-1; i++) {
 				
-				if (kentta[i][j][k] == Pala.VARATTU) {
+				if (kentta.onkoKoordinaattiVarattu(i,j,k)) {
 					piirraTahko(g, i, j, k, 0, 0, -1);
 				}
 				
