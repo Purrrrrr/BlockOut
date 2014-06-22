@@ -29,11 +29,6 @@ public class Palikka {
    */
   private int[][] pyoraytyksetSuunnittain;
   /**
-   * Palikan palojen koordinaatit suunnnittain talletettuna. Tämä on optimointi
-   * mahtumistarkistuksia varten.
-   */
-  private List<Koordinaatti>[] pyoraytetytPalakoordinaatit;
-  /**
    * Palikan särmäkoordinaatit suunnittain talletettuna
    */
   private HashMap<Koordinaatti, ArrayList<Koordinaatti>>[] pyoraytetytSarmat;
@@ -111,7 +106,6 @@ public class Palikka {
     this.hashcode = toinen.hashcode;
     this.suunta = toinen.suunta;
     this.hashcodes = toinen.hashcodes;
-    this.pyoraytetytPalakoordinaatit = toinen.pyoraytetytPalakoordinaatit;
   }
 
   /**
@@ -187,7 +181,6 @@ public class Palikka {
     hashcodes = new int[pyoritetytVersiot.length];
     pyoraytyksetSuunnittain = new int[pyoritetytVersiot.length][pyoritykset.length];
     pyoraytetytSarmat = new HashMap[pyoritetytVersiot.length];
-    pyoraytetytPalakoordinaatit = new List[pyoritetytVersiot.length];
 
     for (Integer hc : pyoritetytVersiotHM.keySet()) {
       PalaMatriisi versio = pyoritetytVersiotHM.get(hc);
@@ -203,24 +196,8 @@ public class Palikka {
 
       Kulmahaku kulmahaku = new Kulmahaku(versio);
       pyoraytetytSarmat[versioNumero] = kulmahaku.haeSarmat();
-
-      List<Koordinaatti> palat = new ArrayList<>();
-      for (int k = 0; k < versio.annaSyvyys(); k++) {
-        for (int j = 0; j < versio.annaKorkeus(); j++) {
-          for (int i = 0; i < versio.annaLeveys(); i++) {
-            if (!versio.onkoTyhja(i, j, k)) {
-              palat.add(new Koordinaatti(i, j, k));
-            }
-          }
-        }
-      }
-      pyoraytetytPalakoordinaatit[versioNumero] = palat;
     }
 
-  }
-
-  public List<Koordinaatti> annaPalaKoordinaatit() {
-    return this.pyoraytetytPalakoordinaatit[suunta];
   }
 
   public PalaMatriisi annaPalat() {

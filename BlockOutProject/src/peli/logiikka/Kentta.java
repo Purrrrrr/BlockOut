@@ -10,11 +10,11 @@ public class Kentta {
   private Peli peli;
   private Pistelaskija pistelaskija;
 
-  private Pala[][][] kentta;
+  private PalaMatriisi kentta;
   private int leveys, korkeus, syvyys;
 
   /**
-   * Hallinnoi peli kentan jahmetettyja paloja ja reunoja.
+   * Hallinnoi pelikentän jähmetettyjä paloja ja reunoja.
    *
    * @param peli Pelin hallinnoija, joka vastaa nakyman paivityksesta
    * @param pistelaskija Pelin pistelaskija
@@ -32,15 +32,16 @@ public class Kentta {
     this.korkeus = ulottuvuudet.annaKorkeus();
     this.syvyys = ulottuvuudet.annaSyvyys();
 
-    this.kentta = new Pala[leveys + 2][korkeus + 2][syvyys + 1];
+    this.kentta = new PalaMatriisi(leveys+2, korkeus+2, syvyys+1);
 
     for (int k = 0; k < syvyys + 1; k++) {
       for (int j = 0; j < korkeus + 2; j++) {
         for (int i = 0; i < leveys + 2; i++) {
           if (k == syvyys + 1 - 1 || j == 0 || i == 0 || j == korkeus + 2 - 1 || i == leveys + 2 - 1) {
-            kentta[i][j][k] = Pala.REUNA;
+            //Reunapala
+            kentta.asetaKohdanTyhjyys(i, j, k, false);
           } else {
-            kentta[i][j][k] = Pala.TYHJA;
+            kentta.asetaKohdanTyhjyys(i, j, k, true);
           }
         }
       }
@@ -80,14 +81,14 @@ public class Kentta {
    * @return Tieto siita oliko tyhja vai ei
    */
   public boolean onkoKentanEdustaVapaana() {
-    return kentta[(leveys + 2) / 2][(korkeus + 2) / 2][0] == Pala.TYHJA;
+    return kentta.onkoTyhja((leveys+2) / 2, (korkeus+2) / 2, 0);
   }
 
   /**
    * Selvittää onko kentän tietty kohta varattu
    */
   public boolean onkoKoordinaattiVarattu(int x, int y, int z) {
-    return kentta[x][y][z] != Pala.TYHJA;
+    return !kentta.onkoTyhja(x, y, z);
   }
 
   /**
@@ -113,28 +114,19 @@ public class Kentta {
   private void muutaPalatTippuvistaVaratuiksi(Palikka annettuPalikka, int x, int y, int z) {
     PalaMatriisi palikka = annettuPalikka.annaPalat();
     int keskipiste = (palikka.annaLeveys() - 1) / 2;
-
-    for (int k = 0; k < palikka.annaSyvyys(); k++) {
-      for (int j = 0; j < palikka.annaKorkeus(); j++) {
-        for (int i = 0; i < palikka.annaLeveys(); i++) {
-
-          if (!palikka.onkoTyhja(i, j, k) && k - keskipiste + z >= 0) {
-            kentta[ i - keskipiste + x][ j - keskipiste + y][ k - keskipiste + z] = Pala.VARATTU;
-          }
-
-        }
-      }
-    }
-
+    x -= keskipiste;
+    y -= keskipiste;
+    z -= keskipiste;
+    kentta.lisaaMatriisinPalatKohtaan(palikka, x,y,z);
   }
 
   public String toString() {
     String result = "Palikka!";
 
-    for (int i = 0; i < kentta.length; i++) {
-      for (int k = 0; k < kentta[0][0].length; k++) {
-        for (int j = 0; j < kentta[0].length; j++) {
-          if (kentta[i][j][k] != Pala.TYHJA) {
+    for (int i = 0; i < kentta.annaLeveys(); i++) {
+      for (int k = 0; k < kentta.annaSyvyys(); k++) {
+        for (int j = 0; j < kentta.annaKorkeus(); j++) {
+          if (!kentta.onkoTyhja(i, j, k)) {
             result += "*";
           } else {
             result += " ";
@@ -164,7 +156,7 @@ public class Kentta {
   private boolean kokoKerrosTaytetty(int kerros) {
     for (int i = 1; i < this.leveys + 1; i++) {
       for (int j = 1; j < this.korkeus + 1; j++) {
-        if (kentta[i][j][kerros] != Pala.VARATTU) {
+        if (kentta.onkoTyhja(i, j, kerros)) {
           return false;
         }
       }
@@ -179,9 +171,9 @@ public class Kentta {
         for (int j = 1; j < this.korkeus + 1; j++) {
 
           if (k == 0) {
-            kentta[i][j][k] = Pala.TYHJA;
+            kentta.asetaKohdanTyhjyys(i, j, k, true);
           } else {
-            kentta[i][j][k] = kentta[i][j][k - 1];
+            kentta.asetaKohdanTyhjyys(i, j, k, kentta.onkoTyhja(i, j, k-1));
           }
 
         }
@@ -193,7 +185,7 @@ public class Kentta {
     for (int k = 0; k < this.syvyys; k++) {
       for (int j = 1; j < this.korkeus + 1; j++) {
         for (int i = 1; i < this.leveys + 1; i++) {
-          if (kentta[i][j][k] != Pala.TYHJA) {
+          if (!kentta.onkoTyhja(i, j, k)) {
             return false;
           }
         }
@@ -204,34 +196,19 @@ public class Kentta {
   }
 
   /**
-   * Selvittaako mahtuuko lista paloja kenttaan. Jos pala on kuilun sivujen
+   * Selvittaako mahtuuko palikka kenttaan. Jos pala on kuilun sivujen
    * ulkopuolella palauttaa false. Jos pala on kuilun edessa, mutta sivujen
    * sisapuolella palauttaa true.
    *
-   * @param palaKoordinaatit Palojen x,y,z-koordinaatit suhteessa palaan
-   * @param dx Palan x-koordinaatin säätö
-   * @param dy Palan y-koordinaatin säätö
-   * @param dz Palan z-koordinaatin säätö
+   * @param palikka Palojen x,y,z-koordinaatit suhteessa palaan
+   * @param x Palan x-koordinaatin säätö
+   * @param y Palan y-koordinaatin säätö
+   * @param z Palan z-koordinaatin säätö
    * @return Tieto siita mahtuuko pala kenttaan vai ei
    */
-  public boolean mahtuvatkoPalatKenttaan(List<Koordinaatti> palat, int dx, int dy, int dz) {
-    for (Koordinaatti k : palat) {
-      int x = k.annaX() + dx;
-      int y = k.annaY() + dy;
-      int z = k.annaZ() + dz;
-      try {
-        if (kentta[x][y][z] != Pala.TYHJA) {
-          return false;
-        }
-      } catch (IndexOutOfBoundsException e) {
-        //kentan reunojen sisalla olevat palaset
-        if (x < 1 || y < 1 || x > this.leveys || y > this.korkeus) {
-          return false;
-        }
-        //kentan edessa olevat palaset paastetaan lapi.
-      }
-    }
-    return true;
+  public boolean mahtuukoPalikkaKenttaan(Palikka palikka, int x, int y, int z) {
+    int keskipiste = (palikka.annaPalat().annaLeveys() - 1) / 2;
+    return kentta.mahtuukoPalikka(palikka.annaPalat(), x-keskipiste, y-keskipiste, z-keskipiste);
   }
 
   /**
@@ -255,7 +232,7 @@ public class Kentta {
   private boolean kokoKerrosTyhja(int kerros) {
     for (int i = 1; i < this.leveys + 1; i++) {
       for (int j = 1; j < this.korkeus + 1; j++) {
-        if (kentta[i][j][kerros] == Pala.VARATTU) {
+        if (!kentta.onkoTyhja(i, j, kerros)) {
           return false;
         }
       }

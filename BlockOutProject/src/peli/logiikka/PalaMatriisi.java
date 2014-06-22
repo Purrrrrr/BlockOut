@@ -143,14 +143,6 @@ public class PalaMatriisi {
     }
   }
 
-  public PalaMatriisi(Pala[][][] m) {
-    matriisi = m;
-  }
-
-  public Pala[][][] annaPalat() {
-    return matriisi;
-  }
-
   public boolean onkoTyhja(int x, int y, int z) {
     return matriisi[x][y][z] == Pala.TYHJA;
   }
@@ -173,11 +165,34 @@ public class PalaMatriisi {
 
   /* Placeholder methods */
   public boolean mahtuukoPalikka(PalaMatriisi palikka, int x, int y, int z) {
+    for (int k = 0; k < palikka.annaSyvyys(); k++) {
+      for (int j = 0; j < palikka.annaKorkeus(); j++) {
+        for (int i = 0; i < palikka.annaLeveys(); i++) {
+          if (!palikka.onkoTyhja(i, j, k) && k + z >= 0) {
+            if (x + i < 0 || y + j < 0 || x + i >= this.annaLeveys() || y + j >= this.annaKorkeus()) {
+              return false;
+            }
+            if (!this.onkoTyhja(i + x, j + y, k + z)) {
+              return false;
+            } 
+          }
+        }
+      }
+    }
     return true;
   }
 
-  public void lisaaPalikka(PalaMatriisi palikka, int x, int y, int z) {
+  public void lisaaMatriisinPalatKohtaan(PalaMatriisi palikka, int x, int y, int z) {
+    for (int k = 0; k < palikka.annaSyvyys(); k++) {
+      for (int j = 0; j < palikka.annaKorkeus(); j++) {
+        for (int i = 0; i < palikka.annaLeveys(); i++) {
 
+          if (!palikka.onkoTyhja(i, j, k) && k + z >= 0) {
+            this.asetaKohdanTyhjyys(i + x, j + y, k + z, false);
+          }
+        }
+      }
+    }
   }
 
   public static void main(String[] args) {

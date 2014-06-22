@@ -298,8 +298,6 @@ public class PalikkaKentalla {
 
 	// kenttaan mahtuminen
   private boolean mahtuukoPalikkaKenttaan(int dx, int dy, int dz) {
-    int keskipiste = this.palikka.annaKeskipiste();
-
-    return kentta.mahtuvatkoPalatKenttaan(this.palikka.annaPalaKoordinaatit(), x + dx - keskipiste, y + dy - keskipiste, z + dz - keskipiste);
+    return kentta.mahtuukoPalikkaKenttaan(this.palikka, x + dx, y + dy, z + dz);
   }
 }
