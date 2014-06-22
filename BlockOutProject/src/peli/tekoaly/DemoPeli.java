@@ -13,18 +13,19 @@ import java.awt.Graphics;
 public class DemoPeli extends Peli {
 
   private DemoIkkuna emoIkkuna;
-	private TekoAly aly;
+  private TekoAly aly;
 
   public DemoPeli(DemoIkkuna ikkuna, Asetukset asetukset, Ennatyslistaaja ennatyslistaaja) {
     super(ikkuna.getKayttis(), asetukset, ennatyslistaaja);
     emoIkkuna = ikkuna;
-		aly = TekoAly.annaTekoAly(this,400);
-    
+    aly = TekoAly.annaTekoAly(this, 400);
+
     //Poistetaan normaali näppäinkuuntelija
     for (KeyListener l : getKeyListeners()) {
       removeKeyListener(l);
     }
   }
+
   public void asetaUudetAsetukset(Asetukset asetukset) {
     super.asetaUudetAsetukset(asetukset);
     //Poistetaan normaali näppäinkuuntelija
@@ -37,49 +38,54 @@ public class DemoPeli extends Peli {
     super.haeUusiPalikkaKenttaan();
 
     if (this.onkoGameOver()) {
-			aly.stop();
+      aly.stop();
       emoIkkuna.alustaUusiPeli();
     } else {
-			aly.uusiPalikka();
-		}
+      aly.uusiPalikka();
+    }
   }
-	public void aloitaPeli() {
-		super.aloitaPeli();
-		aly.uusiPalikka();
-		aly.start();
-	}
-	public void asetaPeliTauolle(boolean tauolla) {
-		super.asetaPeliTauolle(tauolla);
-		if (tauolla) aly.stop();
-		if (!tauolla && !aly.isRunning()) aly.start();
-	}
 
+  public void aloitaPeli() {
+    super.aloitaPeli();
+    aly.uusiPalikka();
+    aly.start();
+  }
+
+  public void asetaPeliTauolle(boolean tauolla) {
+    super.asetaPeliTauolle(tauolla);
+    if (tauolla) {
+      aly.stop();
+    }
+    if (!tauolla && !aly.isRunning()) {
+      aly.start();
+    }
+  }
 
   /**
-  * Piirtaa pelinakyman, jonka päällä on teksti DEMO
-  * 
-  * @param g Graphics
-  */
+   * Piirtaa pelinakyman, jonka päällä on teksti DEMO
+   *
+   * @param g Graphics
+   */
   @Override
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
 
     int ikkunanLeveys = this.getWidth();
     int ikkunanKorkeus = this.getHeight();
-    
+
     Font fontti = new Font("futura", Font.PLAIN, 80);
     g.setFont(fontti);
     g.setColor(Color.BLACK);
-    g.drawString("BlockOut", ikkunanLeveys/10*3, ikkunanKorkeus/5);
+    g.drawString("BlockOut", ikkunanLeveys / 10 * 3, ikkunanKorkeus / 5);
     g.setColor(Color.WHITE);
-    g.drawString("BlockOut", ikkunanLeveys/10*3-3, ikkunanKorkeus/5-3);
+    g.drawString("BlockOut", ikkunanLeveys / 10 * 3 - 3, ikkunanKorkeus / 5 - 3);
   }
 
   /**
-  * Kertoo piirretäänkö peliin statistiikat.
-  * 
-  * @return Aina false 
-  */
+   * Kertoo piirretäänkö peliin statistiikat.
+   *
+   * @return Aina false
+   */
   public boolean piirretaankoStatistiikka() {
     return false;
   }

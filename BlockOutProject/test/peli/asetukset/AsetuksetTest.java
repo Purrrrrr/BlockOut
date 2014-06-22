@@ -16,27 +16,25 @@ import org.junit.BeforeClass;
  * @author Usagi-chan
  */
 public class AsetuksetTest {
-	private Asetukset asetukset;
-	
-	public AsetuksetTest() {
-	}
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-	}
+  private Asetukset asetukset;
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-	}
-	
-	@Before
-	public void setUp() {
-		PelinAsetukset pelinAsetukset = new PelinAsetukset(null, "testiasetukset.javafile");
-		this.asetukset = new Asetukset(pelinAsetukset);
-	}
-	
-	
-	
+  public AsetuksetTest() {
+  }
+
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+  }
+
+  @AfterClass
+  public static void tearDownClass() throws Exception {
+  }
+
+  @Before
+  public void setUp() {
+    PelinAsetukset pelinAsetukset = new PelinAsetukset(null, "testiasetukset.javafile");
+    this.asetukset = new Asetukset(pelinAsetukset);
+  }
+
 	// Luokka oli niin taynna gettereita, settereita ja oikeiden tiedostojen kanssa pyorittelemista ettei sita ollut mielekasta testata.
-	
 }

@@ -21,14 +21,19 @@ public class DemoIkkuna extends Ikkuna {
 
     alustaUusiPeli();
   }
+
   public BlockOut getKayttis() {
     return kayttis;
   }
+
   public void pysaytaPeli() {
     peli.asetaPeliTauolle(true);
   }
+
   public void alustaUusiPeli() {
-    if (kayttis.onkoPeliKaynnissa()) return;
+    if (kayttis.onkoPeliKaynnissa()) {
+      return;
+    }
     this.ennatykset.poistaEnnatyslistanKysely();
 
     this.peli = new DemoPeli(this, asetukset.annaValitutAsetukset(), ennatykset);
